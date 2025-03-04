@@ -48,6 +48,16 @@ public class PlayerCamera : MonoBehaviour
         targetRotation = Quaternion.Slerp(transform.rotation, targetRotation, cameraSmoothTime);
         transform.rotation = targetRotation;
 
+        //if (inputManager.quickTurnInput)
+        //{
+        //    inputManager.quickTurnInput = false;
+        //    lookAmountVertical = lookAmountVertical + 180;
+        //    cameraRotation.y = cameraRotation.y + 180;
+        //    transform.rotation = targetRotation;
+
+        //    // IN FUTURE, ADD SMOOTH TRANSITION
+        //}
+
         cameraRotation = Vector3.zero;
         cameraRotation.x = lookAmountHorizontal;
         targetRotation = Quaternion.Euler(cameraRotation);
