@@ -1,4 +1,4 @@
-//using System.Collections;
+﻿//using System.Collections;
 //using System.Collections.Generic;
 //using UnityEngine;
 
@@ -83,6 +83,7 @@ public class InputManager : MonoBehaviour
     private Vector2 movementInput;
     public float moveSpeed = 5f;
     public float gravity = 15f;
+    public float jumpForce = 5f;
     public float groundCheckDistance = 1.2f;
 
     [Header("Camera Rotation")]
@@ -92,10 +93,12 @@ public class InputManager : MonoBehaviour
 
     [Header("Button Inputs")]
     public bool runInput;
+    public bool jumpInput;
 
     private Vector3 moveDirection;
     private float verticalVelocity = 0f;
     private bool isGrounded;
+
 
     private void Awake()
     {
@@ -113,6 +116,8 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Run.performed += i => runInput = true;
             playerControls.PlayerMovement.Run.canceled += i => runInput = false;
+            playerControls.PlayerMovement.Jump.performed += i => jumpInput = true;
+            playerControls.PlayerMovement.Jump.canceled += i => jumpInput = false;
         }
 
         playerControls.Enable();
@@ -134,6 +139,7 @@ public class InputManager : MonoBehaviour
     {
         HandleMovementInput();
         HandleCameraInput();
+        HandleJumpInput();
     }
 
     private void HandleMovementInput()
@@ -149,16 +155,26 @@ public class InputManager : MonoBehaviour
         verticalCameraInput = cameraInput.y;
     }
 
+    private void HandleJumpInput()
+    {
+        if (jumpInput && isGrounded)
+        {
+            animatorManager.TriggerJump();
+            verticalVelocity = Mathf.Sqrt(2f * gravity * jumpForce); // Calcula la fuerza del salto
+            isGrounded = false; // Marca que está en el aire
+        }
+    }
+
     private void HandleGravityAndGrounding()
     {
-        // Verificamos si el personaje est� tocando el suelo con un raycast
+        // Verificamos si el personaje está tocando el suelo con un raycast
         RaycastHit hit;
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, out hit, groundCheckDistance);
 
         if (isGrounded)
         {
-            verticalVelocity = -2f; // Peque�a fuerza para mantener contacto con el suelo
+            verticalVelocity = -2f; // Pequeña fuerza para mantener contacto con el suelo
         }
         else
         {
@@ -177,5 +193,10 @@ public class InputManager : MonoBehaviour
         finalMove.y = verticalVelocity * Time.deltaTime;
 
         characterController.Move(finalMove);
+
+        // Resetear el input de salto después de aplicarlo
+        jumpInput = false;
     }
 }
+
+

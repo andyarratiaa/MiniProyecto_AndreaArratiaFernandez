@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimatorManager : MonoBehaviour
 {
-    Animator animator;
+    public Animator animator;
     float snappedHorizontal;
     float snappedVertical;
 
@@ -49,5 +49,12 @@ public class AnimatorManager : MonoBehaviour
         animator.SetFloat("Horizontal", snappedHorizontal, 0.1f, Time.deltaTime);
         animator.SetFloat("Vertical", snappedVertical, 0.1f, Time.deltaTime);
     }
+
+    public void TriggerJump()
+    {
+        animator.SetTrigger("Jump");
+    }
 }
+
+
 
