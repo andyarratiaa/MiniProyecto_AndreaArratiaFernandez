@@ -76,6 +76,7 @@ public class InputManager : MonoBehaviour
     PlayerControls playerControls;
     AnimatorManager animatorManager;
     CharacterController characterController;
+    Animator animator;
 
     [Header("Player Movement")]
     public float verticalMovementInput;
@@ -94,6 +95,7 @@ public class InputManager : MonoBehaviour
     [Header("Button Inputs")]
     public bool runInput;
     public bool jumpInput;
+    public bool aimingInput;
 
     private Vector3 moveDirection;
     private float verticalVelocity = 0f;
@@ -104,6 +106,7 @@ public class InputManager : MonoBehaviour
     {
         animatorManager = GetComponent<AnimatorManager>();
         characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -118,6 +121,9 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Run.canceled += i => runInput = false;
             playerControls.PlayerMovement.Jump.performed += i => jumpInput = true;
             playerControls.PlayerMovement.Jump.canceled += i => jumpInput = false;
+            playerControls.PlayerActions.Aim.performed += i => aimingInput = true;
+            playerControls.PlayerActions.Aim.canceled += i => aimingInput = false;
+
         }
 
         playerControls.Enable();
@@ -140,6 +146,7 @@ public class InputManager : MonoBehaviour
         HandleMovementInput();
         HandleCameraInput();
         HandleJumpInput();
+        HandleAimingInput();
     }
 
     private void HandleMovementInput()
@@ -147,6 +154,18 @@ public class InputManager : MonoBehaviour
         horizontalMovementInput = movementInput.x;
         verticalMovementInput = movementInput.y;
         animatorManager.HandleAnimatorValues(horizontalMovementInput, verticalMovementInput, runInput);
+
+        //TEMP
+        if (verticalMovementInput != 0 || horizontalMovementInput != 0)
+        {
+            animatorManager.rightHandIK.weight = 0;
+            animatorManager.leftHandIK.weight = 0;
+        }
+        else
+        {
+            animatorManager.rightHandIK.weight = 1;
+            animatorManager.leftHandIK.weight = 1;
+        }
     }
 
     private void HandleCameraInput()
@@ -197,6 +216,26 @@ public class InputManager : MonoBehaviour
         // Resetear el input de salto después de aplicarlo
         jumpInput = false;
     }
+
+    private void HandleAimingInput()
+    {
+        if (verticalMovementInput != 0 || horizontalMovementInput != 0)
+        {
+            aimingInput = false;
+            animator.SetBool("isAiming", false);
+            return;
+        }
+
+        if (aimingInput)
+        {
+            animator.SetBool("isAiming", true);
+        }
+        else
+        {
+            animator.SetBool("isAiming", false);
+        }
+    }
+
 }
 
 

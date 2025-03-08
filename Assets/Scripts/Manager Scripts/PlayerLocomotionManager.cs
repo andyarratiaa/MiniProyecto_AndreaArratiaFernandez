@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerLocomotionManager : MonoBehaviour
 {
     InputManager inputManager;
+    PlayerManager playerManager;
 
     [Header("Camera Transform")]
     public Transform playerCamera;
@@ -19,6 +20,7 @@ public class PlayerLocomotionManager : MonoBehaviour
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
+        playerManager = GetComponent<PlayerManager>();
     }
 
     public void HandleAllLocomotion()
@@ -29,13 +31,23 @@ public class PlayerLocomotionManager : MonoBehaviour
 
     private void HandleRotation()
     {
-        targetRotation = Quaternion.Euler(0, playerCamera.eulerAngles.y, 0);
-        playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-        if (inputManager.verticalMovementInput != 0 || inputManager.horizontalMovementInput != 0)
+        if (playerManager.isAiming)
         {
+            targetRotation = Quaternion.Euler(0, playerCamera.eulerAngles.y, 0);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             transform.rotation = playerRotation;
         }
+        else
+        {
+            targetRotation = Quaternion.Euler(0, playerCamera.eulerAngles.y, 0);
+            playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+            if (inputManager.verticalMovementInput != 0 || inputManager.horizontalMovementInput != 0)
+            {
+                transform.rotation = playerRotation;
+            }
+        }
+        
     }
 }
 

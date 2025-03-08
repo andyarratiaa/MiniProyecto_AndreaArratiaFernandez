@@ -8,7 +8,7 @@ public class WeaponLoaderSlot : MonoBehaviour
 
     private void UnloadAndDestroyWeapon()
     {
-        if (currentWeaponModel != null)
+        if (currentWeaponModel != null && currentWeaponModel.scene.IsValid()) // Verifica que no sea un asset
         {
             Destroy(currentWeaponModel);
         }
