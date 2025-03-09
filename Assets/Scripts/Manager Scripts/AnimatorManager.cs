@@ -6,8 +6,17 @@ using UnityEngine.Animations.Rigging;
 public class AnimatorManager : MonoBehaviour
 {
     public Animator animator;
-    public TwoBoneIKConstraint rightHandIK;
+    public PlayerManager playerManager;
+
+    [Header("Hand IK Constrains")]
+    public TwoBoneIKConstraint rightHandIK; //These constrains enable our character to hold the current weapon properly
     public TwoBoneIKConstraint leftHandIK;
+
+    [Header("Aiming Constrains")]
+    public MultiAimConstraint spine01; //These constrains turn the character toward the aiming target
+    public MultiAimConstraint spine02;
+    public MultiAimConstraint head;
+
 
     RigBuilder rigBuilder;
 
@@ -18,6 +27,7 @@ public class AnimatorManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigBuilder = GetComponent<RigBuilder>();
+        playerManager = GetComponent<PlayerManager>();
     }
 
     public void HandleAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning)
@@ -62,6 +72,23 @@ public class AnimatorManager : MonoBehaviour
         rightHandIK.data.target = rightTarget.transform;
         leftHandIK.data.target = leftTarget.transform;
         rigBuilder.Build();
+    }
+
+    //While aiming our character will turn towards the center of the screen
+    public void UpdateAimConstraints()
+    {
+        if (playerManager.isAiming)
+        {
+            spine01.weight = 0.3f;
+            spine02.weight = 0.3f;
+            head.weight = 0.85f;
+        }
+        else
+        {
+            spine01.weight = 0f;
+            spine02.weight = 0.3f;
+            head.weight = 0f;
+        }
     }
 
     public void TriggerJump()

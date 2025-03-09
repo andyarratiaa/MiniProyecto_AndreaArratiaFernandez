@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,6 +22,7 @@ public class PlayerCamera : MonoBehaviour
 
     [Header("Camera Speeds")]
     public float cameraSmoothTime = 0.2f;
+    public float aimedcameraSmoothTime = 3f;
 
 
     float lookAmountVertical;
@@ -68,19 +69,20 @@ public class PlayerCamera : MonoBehaviour
             cameraRotation = Vector3.zero;
             cameraRotation.y = lookAmountVertical;
             targetRotation = Quaternion.Euler(cameraRotation);
-            targetRotation = Quaternion.Slerp(transform.rotation, targetRotation, cameraSmoothTime);
+            targetRotation = Quaternion.Slerp(transform.rotation, targetRotation, aimedcameraSmoothTime);
             transform.rotation = targetRotation;
 
 
             cameraRotation = Vector3.zero;
             cameraRotation.x = lookAmountHorizontal;
             targetRotation = Quaternion.Euler(cameraRotation);
-            targetRotation = Quaternion.Slerp(cameraPivot.localRotation, targetRotation, cameraSmoothTime);
+            targetRotation = Quaternion.Slerp(cameraPivot.localRotation, targetRotation, aimedcameraSmoothTime);
             cameraObject.transform.localRotation = targetRotation;
         }
         else
         {
             cameraObject.transform.localRotation = Quaternion.Euler(0,0,0);
+
             lookAmountVertical = lookAmountVertical + (inputManager.horizontalCameraInput);
             lookAmountHorizontal = lookAmountHorizontal - (inputManager.verticalCameraInput);
             lookAmountHorizontal = Mathf.Clamp(lookAmountHorizontal, minimumPivotAngle, maximumPivotAngle);
