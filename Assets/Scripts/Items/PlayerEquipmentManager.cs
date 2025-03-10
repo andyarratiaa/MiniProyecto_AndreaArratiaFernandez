@@ -9,6 +9,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     [Header("Current Equipment")]
     public WeaponItem weapon;
+    public WeaponAnimatorManager weaponAnimator;
     RightHandIKTarget rightHandIK;
     LeftHandIKTarget leftHandIK;
     // public SubWeaponItem sunweapon; // Knife, stun grenade etc
@@ -37,7 +38,7 @@ public class PlayerEquipmentManager : MonoBehaviour
         weaponLoaderSlot.LoadWeaponModel(weapon);
         // CHANGE OUR PLAYERS MOVEMENT/IDLE ANIMATIONS TO THE WEAPONS MOVEMENT/IDLE ANIMATIONS
         animatorManager.animator.runtimeAnimatorController = weapon.weaponAnimator;
-
+        weaponAnimator = weaponLoaderSlot.currentWeaponModel.GetComponentInChildren<WeaponAnimatorManager>();
         rightHandIK = weaponLoaderSlot.currentWeaponModel.GetComponentInChildren<RightHandIKTarget>();
         leftHandIK = weaponLoaderSlot.currentWeaponModel.GetComponentInChildren<LeftHandIKTarget>();
 

@@ -6,6 +6,7 @@ using UnityEngine.Animations.Rigging;
 public class AnimatorManager : MonoBehaviour
 {
     public Animator animator;
+    PlayerLocomotionManager playerLocomotionManager;
     public PlayerManager playerManager;
 
     [Header("Hand IK Constrains")]
@@ -26,8 +27,17 @@ public class AnimatorManager : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
         rigBuilder = GetComponent<RigBuilder>();
         playerManager = GetComponent<PlayerManager>();
+    }
+
+    public void PlayAnimationWithOutRootMotion(string targetAnimation, bool isPreformingAction)
+    {
+        animator.SetBool("isPreformingAction", isPreformingAction);
+        animator.SetBool("disableRootMotion", true);
+        animator.applyRootMotion = false;
+        animator.CrossFade(targetAnimation, 0.2f);
     }
 
     public void HandleAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning)
@@ -65,6 +75,20 @@ public class AnimatorManager : MonoBehaviour
 
         animator.SetFloat("Horizontal", snappedHorizontal, 0.1f, Time.deltaTime);
         animator.SetFloat("Vertical", snappedVertical, 0.1f, Time.deltaTime);
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (playerManager.disableRootMotion)
+            return;
+
+        Vector3 animatorDeltaPosition = animator.deltaPosition;
+        animatorDeltaPosition.y = 0;
+
+        Vector3 velocity = animatorDeltaPosition / Time.deltaTime;
+        playerLocomotionManager.playerRigidbody.drag = 0;
+        playerLocomotionManager.playerRigidbody.velocity = velocity;
+        transform.rotation *= animator.deltaRotation;
     }
 
     public void AssignHandIK(RightHandIKTarget rightTarget, LeftHandIKTarget leftTarget)

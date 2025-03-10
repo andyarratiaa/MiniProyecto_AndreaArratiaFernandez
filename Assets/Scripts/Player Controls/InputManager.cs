@@ -1,73 +1,4 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class InputManager : MonoBehaviour
-//{
-//    PlayerControls playerControls;
-//    AnimatorManager animatorManager;
-
-//    [Header("Player Movement")]
-//    public float verticalMovementInput;
-//    public float horizontalMovementInput;
-//    private Vector2 movementInput;
-
-//    [Header("Camera Rotation")]
-//    public float verticalCameraInput;
-//    public float horizontalCameraInput;
-//    private Vector2 cameraInput;
-
-//    [Header("Button Inputs")]
-//    public bool runInput;
-
-//    private void Awake()
-//    {
-//        animatorManager = GetComponent<AnimatorManager>();
-//    }
-
-//    private void OnEnable()
-//    {
-//        if (playerControls == null)
-//        {
-//            playerControls = new PlayerControls();
-
-//            playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
-//            playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
-//            playerControls.PlayerMovement.Run.performed += i => runInput = true;
-//            playerControls.PlayerMovement.Run.canceled += i => runInput = false;
-//        }
-
-//        playerControls.Enable();
-//    }
-
-
-//    private void OnDisable()
-//    {
-//        playerControls.Disable();
-//    }
-
-//    public void HandleAllInputs()
-//    {
-//        HandleMovementInput();
-//        HandleCameraInput();
-//    }
-
-//    private void HandleMovementInput()
-//    {
-//        horizontalMovementInput = movementInput.x;
-//        verticalMovementInput = movementInput.y;
-//        animatorManager.HandleAnimatorValues(horizontalMovementInput, verticalMovementInput, runInput);
-//    }
-
-//    private void HandleCameraInput()
-//    {
-//        horizontalCameraInput = cameraInput.x;
-//        verticalCameraInput = cameraInput.y;
-//    }
-
-//}
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -95,7 +26,9 @@ public class InputManager : MonoBehaviour
     private Vector2 cameraInput;
 
     [Header("Button Inputs")]
+    public bool shootInput; 
     public bool runInput;
+    public bool quickTurnInput;
     public bool jumpInput;
     public bool aimingInput;
 
@@ -123,10 +56,14 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Run.performed += i => runInput = true;
             playerControls.PlayerMovement.Run.canceled += i => runInput = false;
+            playerControls.PlayerMovement.QuickTurn.performed += i => quickTurnInput = true;
+            playerControls.PlayerMovement.QuickTurn.canceled += i => quickTurnInput = false;
             playerControls.PlayerMovement.Jump.performed += i => jumpInput = true;
             playerControls.PlayerMovement.Jump.canceled += i => jumpInput = false;
             playerControls.PlayerActions.Aim.performed += i => aimingInput = true;
             playerControls.PlayerActions.Aim.canceled += i => aimingInput = false;
+            playerControls.PlayerActions.Shoot.performed += i => shootInput = true;
+            playerControls.PlayerActions.Shoot.canceled += i => shootInput = false;
 
         }
 
@@ -150,7 +87,9 @@ public class InputManager : MonoBehaviour
         HandleMovementInput();
         HandleCameraInput();
         HandleJumpInput();
+        HandleQuickTurnInput();
         HandleAimingInput();
+        HandleShootingInput();
     }
 
     private void HandleMovementInput()
@@ -185,6 +124,18 @@ public class InputManager : MonoBehaviour
             animatorManager.TriggerJump();
             verticalVelocity = Mathf.Sqrt(2f * gravity * jumpForce); // Calcula la fuerza del salto
             isGrounded = false; // Marca que está en el aire
+        }
+    }
+
+    private void HandleQuickTurnInput()
+    {
+        if (playerManager.isPreformingAction)
+            return;
+
+        if (quickTurnInput)
+        {
+            animator.SetBool("isPreformingQuickTurn", true);
+            animatorManager.PlayAnimationWithOutRootMotion("Quick Turn", true);
         }
     }
 
@@ -245,6 +196,16 @@ public class InputManager : MonoBehaviour
         }
 
         animatorManager.UpdateAimConstraints();
+    }
+
+    private void HandleShootingInput()
+    {
+        if(shootInput && aimingInput)
+        {
+            shootInput = false;
+            //Debug.Log("Bang");
+            playerManager.UseCurrentWeapon();
+        }
     }
 
 }
