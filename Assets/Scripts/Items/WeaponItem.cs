@@ -7,6 +7,4 @@ public class WeaponItem : Item
 {
     [Header("Weapon Animation")]
     public AnimatorOverrideController weaponAnimator;
-
-    
 }

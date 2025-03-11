@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   itemName: Rifle
-  itemModel: {fileID: 0}
+  itemModel: {fileID: 5810501763479550169, guid: 3fb38f0dadc57aa4bb18b86f3b8b7433,
+    type: 3}
   weaponAnimator: {fileID: 22100000, guid: fa12986de666e6643a382ff694402261, type: 2}
