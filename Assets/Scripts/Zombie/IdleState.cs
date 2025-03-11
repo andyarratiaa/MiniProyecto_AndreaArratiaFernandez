@@ -68,7 +68,7 @@ public class IdleState : State
                     Vector3 playerStartPoint = new Vector3(player.transform.position.x, characterEyeLevel, player.transform.position.z);
                     Vector3 zombieStartPoint = new Vector3(transform.position.x, characterEyeLevel, transform.position.z);
 
-                    Debug.DrawLine(playerStartPoint, zombieStartPoint, Color.red);
+                    Debug.DrawLine(playerStartPoint, zombieStartPoint, Color.yellow);
 
                     // CHECK ONE LAST TIME FOR OBJECT BLOCKING VIEW
                     if (Physics.Linecast(playerStartPoint, zombieStartPoint, out hit))
