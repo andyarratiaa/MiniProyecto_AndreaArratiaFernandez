@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 1205504281353720220}
   - component: {fileID: 94339972253289834}
   m_Layer: 0
-  m_Name: LeftHandIK
+  m_Name: LeftHandIKTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -882,7 +882,7 @@ GameObject:
   - component: {fileID: 4966435526467091120}
   - component: {fileID: 3159917960821113664}
   m_Layer: 0
-  m_Name: RightHandIK
+  m_Name: RightHandIKTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
