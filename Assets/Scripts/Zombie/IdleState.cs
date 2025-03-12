@@ -10,8 +10,9 @@ public class IdleState : State
     [Header("Detection Layer")]
     [SerializeField] LayerMask detectionLayer;
 
-    [Header("Detection Eye Level")]
+    [Header("Line of Sight Detection")]
     [SerializeField] float characterEyeLevel = 1.8f;
+    [SerializeField] LayerMask ignoreForLineOfSightDetection;
 
     [Header("Detection Radius")]
     [SerializeField] float detectionRadius = 5;
@@ -19,6 +20,7 @@ public class IdleState : State
     [Header("Detection Angle Radius")]
     [SerializeField] float minimumDetectionRadiusAngle = -50f;
     [SerializeField] float maximumDetectionRadiusAngle = 50f;
+
 
 
     // Hacemos que el personaje permanezca en idle hasta que encuentre un objetivo
@@ -71,7 +73,7 @@ public class IdleState : State
                     Debug.DrawLine(playerStartPoint, zombieStartPoint, Color.yellow);
 
                     // CHECK ONE LAST TIME FOR OBJECT BLOCKING VIEW
-                    if (Physics.Linecast(playerStartPoint, zombieStartPoint, out hit))
+                    if (Physics.Linecast(playerStartPoint, zombieStartPoint, out hit, ignoreForLineOfSightDetection))
                     {
                         Debug.Log("There is something in the way");
                     }

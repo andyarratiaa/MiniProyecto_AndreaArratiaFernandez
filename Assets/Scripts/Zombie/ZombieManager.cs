@@ -12,22 +12,49 @@ public class ZombieManager : MonoBehaviour
 
     [Header("Current Target")]
     public PlayerManager currentTarget;
+    public float distanceFromCurrentTarget;
 
     [Header("Animator")]
     public Animator animator;
 
     [Header("Navmesh Agent")]
-    NavMeshAgent zombieNavmesAgent;
+    public NavMeshAgent zombieNavmeshAgent;
+
+    [Header("Rigidbody")]
+    public Rigidbody zombieRigidbody;
+
+    [Header("Locomotion")]
+    public float rotationSpeed = 5;
+
+    [Header("Attack")]
+    public float minimumAttacKDistance = 1;
 
     private void Awake()
     {
        currentState = startingState;
-        animator = GetComponent<Animator>();
-       zombieNavmesAgent = GetComponentInChildren<NavMeshAgent>();
+       animator = GetComponent<Animator>();
+       zombieNavmeshAgent = GetComponentInChildren<NavMeshAgent>();
+       zombieRigidbody = GetComponent<Rigidbody>();
     }
     private void FixedUpdate()
     {
         HandleStateMachine();
+    }
+
+    private void Update()
+    {
+        zombieNavmeshAgent.transform.localPosition = Vector3.zero;
+
+        // Bloquear la altura del zombie para que siga la NavMesh
+        if (zombieNavmeshAgent.isOnNavMesh)
+        {
+            transform.position = new Vector3(transform.position.x, zombieNavmeshAgent.nextPosition.y, transform.position.z);
+        }
+
+        if (currentTarget != null)
+        {
+            distanceFromCurrentTarget = Vector3.Distance(currentTarget.transform.position, transform.position);
+        }
     }
     private void HandleStateMachine()
     {
