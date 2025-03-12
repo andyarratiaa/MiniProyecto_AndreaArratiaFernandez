@@ -14,6 +14,4 @@ public class ResetAnimatorBoolZombie : StateMachineBehaviour
             zombie.isPerformingAction = false;
         }
     }
-
-
 }

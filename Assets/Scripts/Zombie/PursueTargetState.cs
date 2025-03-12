@@ -23,8 +23,9 @@ public class PursueTargetState : State
         MoveTowardsCurrentTarget(zombieManager);
         RotateTowardsTarget(zombieManager);
 
-        if (zombieManager.distanceFromCurrentTarget <= zombieManager.minimumAttacKDistance)
+        if (zombieManager.distanceFromCurrentTarget <= zombieManager.maximumAttackDistance)
         {
+            zombieManager.zombieNavmeshAgent.enabled = false;
             return attackState;
         }
         else
