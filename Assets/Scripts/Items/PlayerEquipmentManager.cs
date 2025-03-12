@@ -58,7 +58,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     [Header("Current Equipment")]
     public WeaponItem primaryWeapon; // Pistola
     public WeaponItem secondaryWeapon; // Rifle
-    private WeaponItem currentWeapon;
+    public WeaponItem currentWeapon;
     public WeaponAnimatorManager weaponAnimator;
     RightHandIKTarget rightHandIK;
     LeftHandIKTarget leftHandIK;
@@ -103,4 +103,13 @@ public class PlayerEquipmentManager : MonoBehaviour
         currentWeapon = (currentWeapon == primaryWeapon) ? secondaryWeapon : primaryWeapon;
         LoadCurrentWeapon();
     }
+
+    public void ShootWeapon(PlayerCamera playerCamera)
+    {
+        if (weaponAnimator != null)
+        {
+            weaponAnimator.ShootWeapon(playerCamera, currentWeapon);
+        }
+    }
 }
+

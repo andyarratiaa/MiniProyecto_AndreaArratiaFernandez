@@ -17,7 +17,6 @@ public class PlayerManager : MonoBehaviour
     public bool isPreformingQuickTurn;
     public bool isAiming;
 
-
     private void Awake()
     {
         playerCamera = FindObjectOfType<PlayerCamera>();
@@ -51,13 +50,17 @@ public class PlayerManager : MonoBehaviour
 
     public void UseCurrentWeapon()
     {
-        if(isPreformingAction)
+        if (isPreformingAction)
             return;
-        //In the future we will add the option to use knives also 
+
+        // In the future we will add the option to use knives also
         animatorManager.PlayAnimationWithOutRootMotion("Pistol_Shoot", true);
-        playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera);
+
+        // Se pasa el arma actual para que seleccione la animación correcta
+        playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera, playerEquipmentManager.currentWeapon);
     }
 }
+
 
 
 

@@ -7,22 +7,32 @@ public class WeaponAnimatorManager : MonoBehaviour
     Animator weaponAnimator;
 
     [Header("Weapon FX")]
-    public GameObject weaponMuzzleFlashFX; // The muzzle flash FX that is instantiated when the weapon is fired
-    public GameObject weaponBulletCaseFX;  // The bullet case FX that is ejected from the weapon, when the weapon is fired
+    public GameObject weaponMuzzleFlashFX; // Efecto de disparo
+    public GameObject weaponBulletCaseFX;  // Casquillo de bala expulsado
 
     [Header("Weapon FX Transforms")]
-    public Transform weaponMuzzleFlashTransform; // The location the muzzle flash FX will instantiate
-    public Transform weaponBulletCaseTransform;  // The location the bullet case will instantiate
+    public Transform weaponMuzzleFlashTransform; // Posición del efecto de disparo
+    public Transform weaponBulletCaseTransform;  // Posición del casquillo de bala
 
     private void Awake()
     {
         weaponAnimator = GetComponentInChildren<Animator>();
     }
 
-    public void ShootWeapon(PlayerCamera playerCamera)
+    public void ShootWeapon(PlayerCamera playerCamera, WeaponItem currentWeapon)
     {
-        // ANIMATE THE WEAPON
-        weaponAnimator.Play("Shoot");
+        // ANIMACIÓN SEGÚN EL ARMA ACTUAL
+        if (currentWeapon != null)
+        {
+            if (currentWeapon.weaponName == "Rifle") // Usa el nombre del rifle en el script WeaponItem
+            {
+                weaponAnimator.Play("Rifle");
+            }
+            else
+            {
+                weaponAnimator.Play("Shoot"); // Animación por defecto (pistola)
+            }
+        }
 
         // INSTANTIATE MUZZLE FLASH FX
         GameObject muzzleFlash = Instantiate(weaponMuzzleFlashFX, weaponMuzzleFlashTransform);
@@ -32,13 +42,12 @@ public class WeaponAnimatorManager : MonoBehaviour
         GameObject bulletCase = Instantiate(weaponBulletCaseFX, weaponBulletCaseTransform);
         bulletCase.transform.parent = null;
 
-        // SHOOT SOMETHING
+        // DISPARO Y DETECCIÓN DE COLISIÓN
         RaycastHit hit;
         if (Physics.Raycast(playerCamera.cameraObject.transform.position, playerCamera.cameraObject.transform.forward, out hit))
         {
             Debug.Log(hit.transform.gameObject.name);
         }
     }
-
 }
 
