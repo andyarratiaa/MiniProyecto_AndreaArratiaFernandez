@@ -11,15 +11,15 @@ public class IdleState : State
     [SerializeField] LayerMask detectionLayer;
 
     [Header("Line of Sight Detection")]
-    [SerializeField] float characterEyeLevel = 1.8f;
+    [SerializeField] float characterEyeLevel = 1.6f;
     [SerializeField] LayerMask ignoreForLineOfSightDetection;
 
     [Header("Detection Radius")]
-    [SerializeField] float detectionRadius = 5;
+    [SerializeField] float detectionRadius = 5f;
 
     [Header("Detection Angle Radius")]
-    [SerializeField] float minimumDetectionRadiusAngle = -50f;
-    [SerializeField] float maximumDetectionRadiusAngle = 50f;
+    [SerializeField] float minimumDetectionRadiusAngle = -30f;
+    [SerializeField] float maximumDetectionRadiusAngle = 30f;
 
 
 
@@ -61,6 +61,7 @@ public class IdleState : State
                 // The target must be in front of us
                 Vector3 targetDirection = transform.position - player.transform.position;
                 float viewableAngle = Vector3.Angle(targetDirection, transform.forward);
+                
                 Debug.Log("ViewAngle = " +viewableAngle);
 
                 if (viewableAngle > minimumDetectionRadiusAngle && viewableAngle < maximumDetectionRadiusAngle)

@@ -35,7 +35,7 @@ public class AttackState : State
             return this;
         }
 
-        if (hasPerformedAttack && zombieManager.attackCoolDownTimer <= 0)
+        if (!hasPerformedAttack && zombieManager.attackCoolDownTimer <= 0)
         {
             if (currentAttack == null)
             {

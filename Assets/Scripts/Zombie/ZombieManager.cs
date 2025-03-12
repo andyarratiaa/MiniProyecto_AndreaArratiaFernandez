@@ -35,8 +35,8 @@ public class ZombieManager : MonoBehaviour
 
     [Header("Attack")]
     public float attackCoolDownTimer;
-    public float minimumAttacKDistance = 1;
-    public float maximumAttackDistance = 3.5f;
+    public float minimumAttacKDistance = 1f;
+    public float maximumAttackDistance = 1.5f;
 
     private void Awake()
     {
@@ -49,6 +49,12 @@ public class ZombieManager : MonoBehaviour
     private void FixedUpdate()
     {
         HandleStateMachine();
+        // Mantener al zombi pegado al suelo
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
+        {
+            transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+        }
     }
 
     private void Update()
@@ -57,7 +63,7 @@ public class ZombieManager : MonoBehaviour
 
         if(attackCoolDownTimer > 0 )
         {
-            attackCoolDownTimer = attackCoolDownTimer - Time.deltaTime;
+            attackCoolDownTimer  = attackCoolDownTimer - Time.deltaTime;
         }
 
 
