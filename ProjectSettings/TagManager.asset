@@ -13,13 +13,13 @@ TagManager:
   - UI
   - Ground
   - Player
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Zombie
+  - Damageable Head
+  - Damageable Torso
+  - Damageable Right Arm
+  - Damageable Left Arm
+  - Damageable Right Leg
+  - Damageable Left Leg
   - 
   - 
   - 

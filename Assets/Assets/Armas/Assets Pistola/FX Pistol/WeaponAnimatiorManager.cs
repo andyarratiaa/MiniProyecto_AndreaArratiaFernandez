@@ -14,6 +14,14 @@ public class WeaponAnimatorManager : MonoBehaviour
     public Transform weaponMuzzleFlashTransform; // Posición del efecto de disparo
     public Transform weaponBulletCaseTransform;  // Posición del casquillo de bala
 
+    [Header("Weapon Bullet Range")]
+    public float bulletRange = 100f;
+
+    [Header("Shootable Layers")]
+    public LayerMask shootableLayers;
+
+
+
     private void Awake()
     {
         weaponAnimator = GetComponentInChildren<Animator>();
@@ -44,9 +52,9 @@ public class WeaponAnimatorManager : MonoBehaviour
 
         // DISPARO Y DETECCIÓN DE COLISIÓN
         RaycastHit hit;
-        if (Physics.Raycast(playerCamera.cameraObject.transform.position, playerCamera.cameraObject.transform.forward, out hit))
+        if (Physics.Raycast(playerCamera.cameraObject.transform.position, playerCamera.cameraObject.transform.forward, out hit, bulletRange, shootableLayers))
         {
-            Debug.Log(hit.transform.gameObject.name);
+            Debug.Log(hit.collider.gameObject.layer);
         }
     }
 }
