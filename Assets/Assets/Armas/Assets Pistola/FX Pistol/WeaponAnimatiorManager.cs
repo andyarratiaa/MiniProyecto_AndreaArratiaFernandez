@@ -55,6 +55,36 @@ public class WeaponAnimatorManager : MonoBehaviour
         if (Physics.Raycast(playerCamera.cameraObject.transform.position, playerCamera.cameraObject.transform.forward, out hit, bulletRange, shootableLayers))
         {
             Debug.Log(hit.collider.gameObject.layer);
+            ZombieEffectManager zombie = hit.collider.gameObject.GetComponentInParent<ZombieEffectManager>();
+        
+            if (zombie != null)
+            {
+                if(hit.collider.gameObject.layer == 9)
+                {
+                    zombie.DamageZombieHead();
+                }
+                else if (hit.collider.gameObject.layer == 10)
+                {
+                    zombie.DamageZombieTorso();
+                }
+                else if (hit.collider.gameObject.layer == 11)
+                {
+                    zombie.DamageZombieRightArm();
+                }
+                else if (hit.collider.gameObject.layer == 12)
+                {
+                    zombie.DamageZombieLeftArm();
+                }
+                else if (hit.collider.gameObject.layer == 13)
+                {
+                    zombie.DamageZombieRightLeg();
+                }
+                else if (hit.collider.gameObject.layer == 14)
+                {
+                    zombie.DamageZombieLeftLeg();
+                }
+
+            }
         }
     }
 }

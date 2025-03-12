@@ -7,6 +7,9 @@ public class ZombieManager : MonoBehaviour
 {
     public IdleState startingState;
 
+    [Header("Flags")]
+    public bool isPerformingAction;
+
     [Header("Current State")]
     [SerializeField] private State currentState;
 
@@ -45,11 +48,6 @@ public class ZombieManager : MonoBehaviour
     {
         zombieNavmeshAgent.transform.localPosition = Vector3.zero;
 
-        // Bloquear la altura del zombie para que siga la NavMesh
-        if (zombieNavmeshAgent.isOnNavMesh)
-        {
-            transform.position = new Vector3(transform.position.x, zombieNavmeshAgent.nextPosition.y, transform.position.z);
-        }
 
         if (currentTarget != null)
         {

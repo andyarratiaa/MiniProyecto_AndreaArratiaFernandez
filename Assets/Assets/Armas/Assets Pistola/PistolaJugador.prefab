@@ -1131,6 +1131,10 @@ MonoBehaviour:
     type: 3}
   weaponMuzzleFlashTransform: {fileID: 6810223545283798634}
   weaponBulletCaseTransform: {fileID: 5157124926819033186}
+  bulletRange: 100
+  shootableLayers:
+    serializedVersion: 2
+    m_Bits: 32513
 --- !u!1 &8205124360796566088
 GameObject:
   m_ObjectHideFlags: 0

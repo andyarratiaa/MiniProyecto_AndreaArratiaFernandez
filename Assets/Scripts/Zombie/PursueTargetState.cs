@@ -12,7 +12,13 @@ public class PursueTargetState : State
     }
     public override State Tick(ZombieManager zombieManager)
     {
-        Debug.Log("RUNNING the pursue target state");
+        if (zombieManager.isPerformingAction)
+        {
+            zombieManager.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);
+            return this;
+        }
+
+        //Debug.Log("RUNNING the pursue target state");
 
         MoveTowardsCurrentTarget(zombieManager);
         RotateTowardsTarget(zombieManager);
