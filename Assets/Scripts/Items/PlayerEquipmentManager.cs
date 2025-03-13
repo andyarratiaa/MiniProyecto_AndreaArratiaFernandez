@@ -106,10 +106,11 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     public void ShootWeapon(PlayerCamera playerCamera)
     {
-        if (weaponAnimator != null)
+        if (weaponAnimator != null && currentWeapon != null)
         {
             weaponAnimator.ShootWeapon(playerCamera, currentWeapon);
         }
     }
 }
+
 

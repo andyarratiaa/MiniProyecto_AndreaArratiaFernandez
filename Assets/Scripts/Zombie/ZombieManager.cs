@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -6,11 +6,13 @@ using UnityEngine.AI;
 public class ZombieManager : MonoBehaviour
 {
     public ZombieAnimatorManager zombieAnimatorManager;
+    public ZombieStatManager zombieStatManager;
 
     public IdleState startingState;
 
     [Header("Flags")]
     public bool isPerformingAction;
+    public bool isDead;
 
     [Header("Current State")]
     [SerializeField] private State currentState;
@@ -40,20 +42,26 @@ public class ZombieManager : MonoBehaviour
 
     private void Awake()
     {
-       currentState = startingState;
-       animator = GetComponent<Animator>();
-       zombieNavmeshAgent = GetComponentInChildren<NavMeshAgent>();
-       zombieRigidbody = GetComponent<Rigidbody>();
-       zombieAnimatorManager = GetComponent<ZombieAnimatorManager>();
+        currentState = startingState;
+        animator = GetComponent<Animator>();
+        zombieNavmeshAgent = GetComponentInChildren<NavMeshAgent>();
+        zombieRigidbody = GetComponent<Rigidbody>();
+        zombieAnimatorManager = GetComponent<ZombieAnimatorManager>();
+        zombieStatManager = GetComponent<ZombieStatManager>();
     }
+
     private void FixedUpdate()
     {
-        HandleStateMachine();
-        // Mantener al zombi pegado al suelo
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
+        if (!isDead)
         {
-            transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+            HandleStateMachine();
+
+            // Mantener al zombi pegado al suelo
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
+            {
+                transform.position = new Vector3(transform.position.x, hit.point.y, transform.position.z);
+            }
         }
     }
 
@@ -61,11 +69,10 @@ public class ZombieManager : MonoBehaviour
     {
         zombieNavmeshAgent.transform.localPosition = Vector3.zero;
 
-        if(attackCoolDownTimer > 0 )
+        if (attackCoolDownTimer > 0)
         {
-            attackCoolDownTimer  = attackCoolDownTimer - Time.deltaTime;
+            attackCoolDownTimer -= Time.deltaTime;
         }
-
 
         if (currentTarget != null)
         {
@@ -74,6 +81,7 @@ public class ZombieManager : MonoBehaviour
             distanceFromCurrentTarget = Vector3.Distance(currentTarget.transform.position, transform.position);
         }
     }
+
     private void HandleStateMachine()
     {
         State nextState;
@@ -87,5 +95,39 @@ public class ZombieManager : MonoBehaviour
             }
         }
     }
+
+    // Método para manejar la muerte del zombie
+    private void HandleDeath()
+    {
+        if (!isDead)
+            return;
+
+        // Desactivar todos los colliders
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        // Deshabilitar el NavMeshAgent para que no interfiera con la caída
+        if (zombieNavmeshAgent != null)
+        {
+            zombieNavmeshAgent.enabled = false;
+        }
+
+        // Reproducir la animación de muerte
+        animator.Play("Dead Zombie");
+    }
+
+    // Llamar a este método cuando el zombi muera
+    public void Die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+        HandleDeath();
+    }
 }
+
 

@@ -9,7 +9,7 @@ public class PlayerManager : MonoBehaviour
     Animator animator;
     AnimatorManager animatorManager;
     PlayerLocomotionManager playerLocomotionManager;
-    PlayerEquipmentManager playerEquipmentManager;
+    public PlayerEquipmentManager playerEquipmentManager;
 
     [Header("Player Flags")]
     public bool disableRootMotion;
