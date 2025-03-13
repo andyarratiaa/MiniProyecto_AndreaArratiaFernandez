@@ -75,6 +75,15 @@ public class PlayerEquipmentManager : MonoBehaviour
         LoadCurrentWeapon();
     }
 
+    private void Update()
+    {
+        // Si se presiona la tecla "E", cambia de arma
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SwitchWeapon();
+        }
+    }
+
     private void LoadWeaponLoaderSlots()
     {
         weaponLoaderSlot = GetComponentInChildren<WeaponLoaderSlot>();
@@ -112,5 +121,6 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
     }
 }
+
 
 

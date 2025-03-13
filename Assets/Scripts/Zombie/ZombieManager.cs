@@ -40,6 +40,9 @@ public class ZombieManager : MonoBehaviour
     public float minimumAttacKDistance = 1f;
     public float maximumAttackDistance = 1.5f;
 
+    [Header("Key Drop")]
+    public GameObject keyObject; // Referencia a la llave en la jerarquía
+
     private void Awake()
     {
         currentState = startingState;
@@ -48,6 +51,12 @@ public class ZombieManager : MonoBehaviour
         zombieRigidbody = GetComponent<Rigidbody>();
         zombieAnimatorManager = GetComponent<ZombieAnimatorManager>();
         zombieStatManager = GetComponent<ZombieStatManager>();
+
+        // Asegurarse de que la llave está desactivada al inicio
+        if (keyObject != null)
+        {
+            keyObject.SetActive(false);
+        }
     }
 
     private void FixedUpdate()
@@ -96,7 +105,6 @@ public class ZombieManager : MonoBehaviour
         }
     }
 
-    // Método para manejar la muerte del zombie
     private void HandleDeath()
     {
         if (!isDead)
@@ -115,11 +123,23 @@ public class ZombieManager : MonoBehaviour
             zombieNavmeshAgent.enabled = false;
         }
 
+        // Activar la gravedad y permitir que el zombi caiga
+        if (zombieRigidbody != null)
+        {
+            zombieRigidbody.useGravity = true;
+            zombieRigidbody.isKinematic = false;
+        }
+
         // Reproducir la animación de muerte
         animator.Play("Dead Zombie");
+
+        // Activar la llave si está asignada
+        if (keyObject != null)
+        {
+            keyObject.SetActive(true);
+        }
     }
 
-    // Llamar a este método cuando el zombi muera
     public void Die()
     {
         if (isDead)
