@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    PlayerCamera playerCamera;
     InputManager inputManager;
     Animator animator;
-    AnimatorManager animatorManager;
+    public AnimatorManager animatorManager;
+
+    public PlayerUIManager playerUIManager;
+    PlayerCamera playerCamera;
     PlayerLocomotionManager playerLocomotionManager;
     public PlayerEquipmentManager playerEquipmentManager;
 
@@ -19,6 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Awake()
     {
+        playerUIManager = FindObjectOfType<PlayerUIManager>();
         playerCamera = FindObjectOfType<PlayerCamera>();
         inputManager = GetComponent<InputManager>();
         animator = GetComponent<Animator>();
@@ -53,11 +56,20 @@ public class PlayerManager : MonoBehaviour
         if (isPreformingAction)
             return;
 
-        // In the future we will add the option to use knives also
-        animatorManager.PlayAnimationWithOutRootMotion("Pistol_Shoot", true);
+        if (playerEquipmentManager.currentWeapon.remainingAmmo > 0)
+        {
+            playerEquipmentManager.currentWeapon.remainingAmmo = playerEquipmentManager.currentWeapon.remainingAmmo - 1;
+            playerUIManager.currentAmmoCountText.text = playerEquipmentManager.currentWeapon.remainingAmmo.ToString();
+            // In the future we will add the option to use knives also
+            animatorManager.PlayAnimationWithOutRootMotion("Pistol_Shoot", true);
 
-        // Se pasa el arma actual para que seleccione la animación correcta
-        playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera, playerEquipmentManager.currentWeapon);
+            // Se pasa el arma actual para que seleccione la animación correcta
+            playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera, playerEquipmentManager.currentWeapon);
+        }
+        else
+        {
+            Debug.Log("CLICK (You are out of Ammo, RELOAD");
+        }
     }
 }
 

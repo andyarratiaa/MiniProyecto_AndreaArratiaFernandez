@@ -31,12 +31,13 @@ public class InputManager : MonoBehaviour
     public bool quickTurnInput;
     public bool jumpInput;
     public bool aimingInput;
+    public bool reloadInput;
 
     private Vector3 moveDirection;
     private float verticalVelocity = 0f;
     private bool isGrounded;
 
-
+    
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
@@ -64,6 +65,8 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Aim.canceled += i => aimingInput = false;
             playerControls.PlayerActions.Shoot.performed += i => shootInput = true;
             playerControls.PlayerActions.Shoot.canceled += i => shootInput = false;
+            playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
+           
 
         }
 
@@ -90,6 +93,7 @@ public class InputManager : MonoBehaviour
         HandleQuickTurnInput();
         HandleAimingInput();
         HandleShootingInput();
+        HandleReloadInput();
     }
 
     private void HandleMovementInput()
@@ -205,6 +209,70 @@ public class InputManager : MonoBehaviour
             shootInput = false;
             //Debug.Log("Bang");
             playerManager.UseCurrentWeapon();
+        }
+    }
+
+    private void HandleReloadInput()
+    {
+        // No permitir recargar si el jugador está realizando otra acción
+        if (playerManager.isPreformingAction)
+            return;
+
+        if (reloadInput)
+        {
+            reloadInput = false;
+           
+
+            WeaponItem currentWeapon = playerManager.playerEquipmentManager.currentWeapon;
+
+            if (currentWeapon == null)
+            {
+                Debug.Log("No hay arma equipada.");
+                return;
+            }
+
+            // Obtener el límite de munición del arma actual
+            int maxAmmo = currentWeapon.maxAmmo;
+            int ammoNeeded = maxAmmo - currentWeapon.remainingAmmo;
+
+            // Determinar la munición disponible en el inventario según el arma
+            int ammoFromInventory = 0;
+
+            if (currentWeapon.weaponName == "Pistola") // Si es la pistola
+            {
+                ammoFromInventory = playerManager.playerEquipmentManager.pistolAmmoInventory;
+            }
+            else if (currentWeapon.weaponName == "Rifle") // Si es el rifle
+            {
+                ammoFromInventory = playerManager.playerEquipmentManager.rifleAmmoInventory;
+            }
+
+            if (ammoNeeded > 0 && ammoFromInventory > 0) // Solo recargar si no está llena y hay balas en el inventario
+            {
+                playerManager.animatorManager.ClearHandIKWeights();
+                playerManager.animatorManager.PlayAnimation("Reload", true);
+
+                // Obtener la cantidad de balas a recargar sin exceder el inventario
+                int ammoToReload = Mathf.Min(ammoNeeded, ammoFromInventory);
+                currentWeapon.remainingAmmo += ammoToReload;
+
+                // Restar las balas usadas del inventario
+                if (currentWeapon.weaponName == "Pistola")
+                {
+                    playerManager.playerEquipmentManager.pistolAmmoInventory -= ammoToReload;
+                }
+                else if (currentWeapon.weaponName == "Rifle")
+                {
+                    playerManager.playerEquipmentManager.rifleAmmoInventory -= ammoToReload;
+                }
+
+                // Actualizar la UI con la nueva cantidad de munición en el cargador
+                playerManager.playerUIManager.currentAmmoCountText.text = currentWeapon.remainingAmmo.ToString();
+            }
+            else
+            {
+                Debug.Log("No hay suficiente munición para recargar o el cargador ya está lleno.");
+            }
         }
     }
 

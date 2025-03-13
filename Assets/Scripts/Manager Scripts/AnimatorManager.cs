@@ -40,6 +40,13 @@ public class AnimatorManager : MonoBehaviour
         animator.CrossFade(targetAnimation, 0.2f);
     }
 
+    public void PlayAnimation(string targetAnimation, bool isPreformingAction)
+    {
+        animator.SetBool("isPreformingAction", isPreformingAction);
+        animator.SetBool("disableRootMotion", true);
+        animator.CrossFade(targetAnimation, 0.2f);
+    }
+
     public void HandleAnimatorValues(float horizontalMovement, float verticalMovement, bool isRunning)
     {
         if (horizontalMovement > 0)
@@ -98,6 +105,25 @@ public class AnimatorManager : MonoBehaviour
         rigBuilder.Build();
     }
 
+    public void ClearHandIKWeights()
+    {
+        rightHandIK.data.targetPositionWeight = 0;
+        rightHandIK.data.targetRotationWeight = 0;
+
+        leftHandIK.data.targetPositionWeight = 0;
+        leftHandIK.data.targetRotationWeight = 0;
+
+    }
+
+    public void RefreshHandIKWeights()
+    {
+        rightHandIK.data.targetPositionWeight = 1;
+        rightHandIK.data.targetRotationWeight = 1;
+
+        leftHandIK.data.targetPositionWeight = 1;
+        leftHandIK.data.targetRotationWeight = 1;
+    }
+
     //While aiming our character will turn towards the center of the screen
     public void UpdateAimConstraints()
     {
@@ -119,6 +145,8 @@ public class AnimatorManager : MonoBehaviour
     {
         animator.SetTrigger("Jump");
     }
+
+
 }
 
 

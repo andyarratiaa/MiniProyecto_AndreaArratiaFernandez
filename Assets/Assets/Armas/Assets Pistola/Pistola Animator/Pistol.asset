@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 520fc4289bf5d214780af36aa4c548ec, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  itemName: Pistola
+  itemModel: {fileID: 8141346769784814394, guid: 48698b710f3724c4b8968096da6beda2,
+    type: 3}
+  weaponName: Pistola
+  weaponAnimator: {fileID: 22100000, guid: b6e065f8de6502841a3395bc8d4ac58a, type: 2}
+  damage: 20
+  remainingAmmo: 12
+  maxAmmo: 12
