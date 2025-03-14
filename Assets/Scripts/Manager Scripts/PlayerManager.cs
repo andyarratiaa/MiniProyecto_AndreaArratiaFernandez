@@ -9,9 +9,10 @@ public class PlayerManager : MonoBehaviour
     public AnimatorManager animatorManager;
 
     public PlayerUIManager playerUIManager;
-    PlayerCamera playerCamera;
+    public PlayerCamera playerCamera;
     PlayerLocomotionManager playerLocomotionManager;
     public PlayerEquipmentManager playerEquipmentManager;
+    public PlayerInventoryManager playerInventoryManager;
 
     [Header("Player Flags")]
     public bool disableRootMotion;
@@ -26,8 +27,10 @@ public class PlayerManager : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         animator = GetComponent<Animator>();
         animatorManager = GetComponent<AnimatorManager>();
+
         playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
     }
 
     private void Update()
@@ -72,7 +75,6 @@ public class PlayerManager : MonoBehaviour
         }
     }
 }
-
 
 
 
