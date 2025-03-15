@@ -20,3 +20,4 @@ MonoBehaviour:
   damage: 20
   remainingAmmo: 12
   maxAmmo: 12
+  ammoType: 0

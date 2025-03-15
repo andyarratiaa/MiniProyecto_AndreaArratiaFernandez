@@ -15,7 +15,7 @@ public class WeaponItem : Item
     public int damage = 20;
 
     [Header("Ammo")]
-    public int remainingAmmo = 0;
+    public int remainingAmmo;
     public int maxAmmo = 12; // Capacidad máxima del cargador
 
     public AmmoType ammoType;
