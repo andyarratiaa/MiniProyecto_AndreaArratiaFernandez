@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    InputManager inputManager;
+    public InputManager inputManager;
     Animator animator;
     public AnimatorManager animatorManager;
 
@@ -19,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     public bool isPreformingAction;
     public bool isPreformingQuickTurn;
     public bool isAiming;
+    public bool canInteract;
 
     private void Awake()
     {
