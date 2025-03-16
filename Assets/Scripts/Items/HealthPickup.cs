@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class HealthPickup : MonoBehaviour
 {
-    public float healthPercentage = 0.2f; // Recupera un 20% de la vida
+    public float healthPercentage = 10f; // Recupera un 20% de la vida
     private bool isPlayerNearby = false;
-    private PlayerManager playerManager;
+    private PlayerHealthManager playerHealthManager;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) // Asegúrate de que el jugador tiene el tag "Player"
         {
             isPlayerNearby = true;
-            playerManager = other.GetComponent<PlayerManager>();
+            playerHealthManager = other.GetComponent<PlayerHealthManager>();
         }
     }
 
@@ -20,7 +20,7 @@ public class HealthPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = false;
-            playerManager = null;
+            playerHealthManager = null;
         }
     }
 
@@ -34,12 +34,22 @@ public class HealthPickup : MonoBehaviour
 
     private void PickupHealth()
     {
-        if (playerManager != null)
+        if (playerHealthManager != null)
         {
-            // Aquí se agregará la lógica para restaurar la vida cuando el sistema esté implementado
-            Debug.Log("Vida aumentada en " + (healthPercentage * 100) + "%");
+            float healthToRestore = playerHealthManager.maxHealth * (healthPercentage / 100f);
+            playerHealthManager.currentHealth += healthToRestore;
 
-            Destroy(gameObject); // Elimina el objeto tras recogerlo
+            // Asegurar que la salud no exceda el máximo permitido
+            if (playerHealthManager.currentHealth > playerHealthManager.maxHealth)
+            {
+                playerHealthManager.currentHealth = playerHealthManager.maxHealth;
+            }
+
+            playerHealthManager.UpdateHealthBar(); // Actualizar la UI de la barra de vida
+
+            Debug.Log("Vida aumentada en " + healthToRestore + " puntos.");
+
+            Destroy(gameObject); // Eliminar el objeto después de recogerlo
         }
     }
 }

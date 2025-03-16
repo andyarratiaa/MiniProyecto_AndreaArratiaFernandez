@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +21,8 @@ public class PlayerManager : MonoBehaviour
     public bool isAiming;
     public bool canInteract;
 
+    private AudioSource audioSource; // 🔊 AudioSource para sonidos de disparo
+
     private void Awake()
     {
         playerUIManager = FindObjectOfType<PlayerUIManager>();
@@ -32,6 +34,13 @@ public class PlayerManager : MonoBehaviour
         playerLocomotionManager = GetComponent<PlayerLocomotionManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
+
+        // 🔊 Inicializar el AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     private void Update()
@@ -62,20 +71,33 @@ public class PlayerManager : MonoBehaviour
 
         if (playerEquipmentManager.currentWeapon.remainingAmmo > 0)
         {
-            playerEquipmentManager.currentWeapon.remainingAmmo = playerEquipmentManager.currentWeapon.remainingAmmo - 1;
+            playerEquipmentManager.currentWeapon.remainingAmmo -= 1;
             playerUIManager.currentAmmoCountText.text = playerEquipmentManager.currentWeapon.remainingAmmo.ToString();
-            // In the future we will add the option to use knives also
+
+            // 🔹 Reproducir la animación de disparo
             animatorManager.PlayAnimationWithOutRootMotion("Pistol_Shoot", true);
 
-            // Se pasa el arma actual para que seleccione la animaci�n correcta
+            // 🔊 Reproducir sonido del disparo
+            PlayWeaponSound();
+
+            // 🔹 Disparar el arma con la animación correcta
             playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera, playerEquipmentManager.currentWeapon);
         }
         else
         {
-            Debug.Log("CLICK (You are out of Ammo, RELOAD");
+            Debug.Log("CLICK (You are out of Ammo, RELOAD)");
+        }
+    }
+
+    private void PlayWeaponSound()
+    {
+        if (playerEquipmentManager.currentWeapon.shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(playerEquipmentManager.currentWeapon.shootSound);
         }
     }
 }
+
 
 
 

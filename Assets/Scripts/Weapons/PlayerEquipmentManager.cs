@@ -31,7 +31,6 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     private void Update()
     {
-        // Si se presiona la tecla "C", cambia de arma
         if (Input.GetKeyDown(KeyCode.C))
         {
             SwitchWeapon();
@@ -47,10 +46,7 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         if (currentWeapon == null) return;
 
-        // Cargar el arma en la mano del jugador
         weaponLoaderSlot.LoadWeaponModel(currentWeapon);
-
-        // Asignar el Animator correspondiente al arma
         playerManager.animatorManager.animator.runtimeAnimatorController = currentWeapon.weaponAnimator;
 
         weaponAnimator = weaponLoaderSlot.currentWeaponModel.GetComponentInChildren<WeaponAnimatorManager>();
@@ -58,14 +54,8 @@ public class PlayerEquipmentManager : MonoBehaviour
         leftHandIK = weaponLoaderSlot.currentWeaponModel.GetComponentInChildren<LeftHandIKTarget>();
 
         playerManager.animatorManager.AssignHandIK(rightHandIK, leftHandIK);
-
-        // Actualizar la UI del contador de balas
         playerManager.playerUIManager.currentAmmoCountText.text = currentWeapon.remainingAmmo.ToString();
 
-        // **Actualizar la UI del arma (imagen y tamaño)**
-        playerManager.playerUIManager.UpdateWeaponUI(currentWeapon.weaponIcon, currentWeapon.weaponIconSize);
-
-        // Comprobar la munición en el inventario
         if (playerManager.playerInventoryManager.currentAmmoInInventory != null)
         {
             if (playerManager.playerInventoryManager.currentAmmoInInventory.ammoType == currentWeapon.ammoType)
@@ -74,19 +64,11 @@ public class PlayerEquipmentManager : MonoBehaviour
             }
         }
     }
+
     public void SwitchWeapon()
     {
-        // Alternar entre la pistola y el rifle
         currentWeapon = (currentWeapon == primaryWeapon) ? secondaryWeapon : primaryWeapon;
         LoadCurrentWeapon();
-    }
-
-    public void ShootWeapon(PlayerCamera playerCamera)
-    {
-        if (weaponAnimator != null && currentWeapon != null)
-        {
-            weaponAnimator.ShootWeapon(playerCamera, currentWeapon);
-        }
     }
 }
 

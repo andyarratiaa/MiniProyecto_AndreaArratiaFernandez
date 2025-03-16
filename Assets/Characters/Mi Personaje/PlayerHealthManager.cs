@@ -44,7 +44,7 @@ public class PlayerHealthManager : MonoBehaviour
         UpdateHealthBar();
     }
 
-    void UpdateHealthBar()
+    public void UpdateHealthBar()
     {
         if (healthBar != null)
         {
