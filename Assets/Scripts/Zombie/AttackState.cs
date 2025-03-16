@@ -95,6 +95,15 @@ public class AttackState : State
             hasPerformedAttack = true;
             zombieManager.attackCoolDownTimer = currentAttack.attackCooldown;
             zombieManager.zombieAnimatorManager.PlayTargetAttackAnimation(currentAttack.attackAnimation);
+
+            if (zombieManager.currentTarget != null)
+            {
+                PlayerHealthManager playerHealth = zombieManager.currentTarget.GetComponent<PlayerHealthManager>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(15f); // Reduce un 15% de la vida total
+                }
+            }
         }
         else
         {

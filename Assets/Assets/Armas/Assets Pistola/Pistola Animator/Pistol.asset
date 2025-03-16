@@ -18,6 +18,6 @@ MonoBehaviour:
   weaponName: Pistola
   weaponAnimator: {fileID: 22100000, guid: b6e065f8de6502841a3395bc8d4ac58a, type: 2}
   damage: 20
-  remainingAmmo: 12
-  maxAmmo: 12
+  remainingAmmo: 20
+  maxAmmo: 20
   ammoType: 0

@@ -17,7 +17,7 @@ MonoBehaviour:
     type: 3}
   weaponName: Rifle
   weaponAnimator: {fileID: 22100000, guid: 5edfbb4e64f2b634b8dad08959c1c6cf, type: 2}
-  damage: 40
-  remainingAmmo: 6
-  maxAmmo: 6
+  damage: 35
+  remainingAmmo: 10
+  maxAmmo: 10
   ammoType: 0

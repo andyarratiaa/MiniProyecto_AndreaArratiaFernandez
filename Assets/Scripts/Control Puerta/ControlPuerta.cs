@@ -54,13 +54,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ControlPuerta : MonoBehaviour
 {
     Animator anim;
     public bool Dentro = false;
     bool puerta = false;
-    public bool tieneLlave = false; // Esta puerta solo se abre si tiene su llave correspondiente
+    public bool tieneLlave = false; // La puerta solo se abre si tiene la llave
+    public string nombreEscenaDestino; // Nombre de la escena a la que se cambiará
+    public Transform posicionLlegada; // Posición donde aparecerá el jugador en la siguiente escena
 
     void Start()
     {
@@ -87,25 +90,47 @@ public class ControlPuerta : MonoBehaviour
     {
         if (Dentro && Input.GetKeyDown(KeyCode.E))
         {
-            if (tieneLlave) // Verifica si la puerta tiene la llave correcta
+            if (tieneLlave) // Si el jugador tiene la llave correcta
             {
                 puerta = !puerta;
                 anim.SetBool("Abierto", puerta);
+
+                if (puerta) // Si la puerta se abre, cambiar de escena
+                {
+                    StartCoroutine(CambiarEscena());
+                }
             }
             else
             {
-                Debug.Log("Necesitas la llave correcta para abrir estas puertas.");
+                Debug.Log("Necesitas la llave para abrir esta puerta.");
             }
         }
     }
 
-    // Método para asignar la llave a esta puerta (lo llamará el script de la llave)
+    // Método para asignar la llave a esta puerta (llamado desde el script de la llave)
     public void ObtenerLlave()
     {
         tieneLlave = true;
         Debug.Log("Has obtenido la llave para estas puertas.");
     }
+
+    // Método para cambiar de escena con una pequeña espera
+    IEnumerator CambiarEscena()
+    {
+        yield return new WaitForSeconds(1f); // Pequeña pausa antes de cambiar de escena
+
+        // Guardar la posición de llegada en PlayerPrefs (para que se use en la nueva escena)
+        if (posicionLlegada != null)
+        {
+            PlayerPrefs.SetFloat("PosX", posicionLlegada.position.x);
+            PlayerPrefs.SetFloat("PosY", posicionLlegada.position.y);
+            PlayerPrefs.SetFloat("PosZ", posicionLlegada.position.z);
+        }
+
+        SceneManager.LoadScene(nombreEscenaDestino);
+    }
 }
+
 
 
 
