@@ -37,6 +37,8 @@ public class PursueTargetState : State
     private void MoveTowardsCurrentTarget(ZombieManager zombieManager)
     {
         zombieManager.animator.SetFloat("Vertical", 1, 0.2f, Time.deltaTime);
+
+        //zombieManager.PlayWalkSound();
     }
 
     private void RotateTowardsTarget(ZombieManager zombieManager)

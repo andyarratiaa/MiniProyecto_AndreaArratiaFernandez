@@ -255,6 +255,7 @@ public class InputManager : MonoBehaviour
 
                     player.animatorManager.ClearHandIKWeights();
                     player.animatorManager.PlayAnimation("Reload", true);
+                    player.PlayReloadSound(); // 🔊 Reproduce el sonido de recarga
 
                     // PLACE MORE AMMO IN THE WEAPON
                     player.playerUIManager.currentAmmoCountText.text = player.playerEquipmentManager.currentWeapon.remainingAmmo.ToString();
@@ -268,6 +269,21 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void ResetInputs()
+    {
+        movementInput = Vector2.zero;
+        horizontalMovementInput = 0f;
+        verticalMovementInput = 0f;
+        horizontalCameraInput = 0f;
+        verticalCameraInput = 0f;
+
+        shootInput = false;
+        runInput = false;
+        quickTurnInput = false;
+        jumpInput = false;
+        aimingInput = false;
+        reloadInput = false;
+    }
 }
 
 

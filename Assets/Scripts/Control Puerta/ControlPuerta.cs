@@ -1,57 +1,4 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class ControlPuerta : MonoBehaviour
-//{
-//    Animator anim;
-
-//    public bool Dentro = false;
-//    bool puerta = false;
-
-//    // Use this for initialization
-//    void Start()
-//    {
-//        anim = GetComponent<Animator>();
-//    }
-
-//    void OnTriggerEnter(Collider col)
-//    {
-//        if (col.tag == "Player")
-//        {
-//            Dentro = true;
-//        }
-//    }
-
-//    void OnTriggerExit(Collider col)
-//    {
-//        if (col.tag == "Player")
-//        {
-//            Dentro = false;
-//        }
-//    }
-
-//    // Update is called once per frame
-//    void Update() 
-//    {
-//        if(Dentro && Input.GetKeyDown(KeyCode.E))
-//        {
-//            puerta = !puerta;
-//        }
-
-//        if (puerta)
-//        {
-//            anim.SetBool("Abierto", true);
-//        }
-//        else
-//        {
-//            anim.SetBool("Abierto", false);
-//        }
-//    }
-
-//}
-
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -62,8 +9,22 @@ public class ControlPuerta : MonoBehaviour
     public bool Dentro = false;
     bool puerta = false;
     public bool tieneLlave = false; // La puerta solo se abre si tiene la llave
-    public string nombreEscenaDestino; // Nombre de la escena a la que se cambiará
-    public Transform posicionLlegada; // Posición donde aparecerá el jugador en la siguiente escena
+    public string nombreEscenaDestino; // Nombre de la escena a la que se cambiarÃ¡
+    public Transform posicionLlegada; // PosiciÃ³n donde aparecerÃ¡ el jugador en la siguiente escena
+
+
+
+    private AudioSource audioSource; // ðŸ”Š AudioSource para sonidos de disparo
+    public AudioClip openDoor;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
 
     void Start()
     {
@@ -97,6 +58,7 @@ public class ControlPuerta : MonoBehaviour
 
                 if (puerta) // Si la puerta se abre, cambiar de escena
                 {
+                    PlayDoorSound();
                     StartCoroutine(CambiarEscena());
                 }
             }
@@ -107,19 +69,27 @@ public class ControlPuerta : MonoBehaviour
         }
     }
 
-    // Método para asignar la llave a esta puerta (llamado desde el script de la llave)
+    // MÃ©todo para asignar la llave a esta puerta (llamado desde el script de la llave)
     public void ObtenerLlave()
     {
         tieneLlave = true;
         Debug.Log("Has obtenido la llave para estas puertas.");
     }
 
-    // Método para cambiar de escena con una pequeña espera
+    // MÃ©todo para cambiar de escena con una pequeÃ±a espera
+    // MÃ©todo para cambiar de escena con una pequeÃ±a espera
     IEnumerator CambiarEscena()
     {
-        yield return new WaitForSeconds(1f); // Pequeña pausa antes de cambiar de escena
+        // Guardar la salud del jugador antes de cambiar de escena
+        if (FindObjectOfType<PlayerHealthManager>() != null)
+        {
+            PlayerPrefs.SetFloat("PlayerHealth", FindObjectOfType<PlayerHealthManager>().currentHealth);
+            PlayerPrefs.Save();
+        }
 
-        // Guardar la posición de llegada en PlayerPrefs (para que se use en la nueva escena)
+        yield return new WaitForSeconds(1.75f); // PequeÃ±a pausa antes de cambiar de escena
+
+        // Guardar la posiciÃ³n de llegada en PlayerPrefs
         if (posicionLlegada != null)
         {
             PlayerPrefs.SetFloat("PosX", posicionLlegada.position.x);
@@ -128,6 +98,14 @@ public class ControlPuerta : MonoBehaviour
         }
 
         SceneManager.LoadScene(nombreEscenaDestino);
+    }
+
+    void PlayDoorSound()
+    {
+        if (openDoor != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(openDoor);
+        }
     }
 }
 

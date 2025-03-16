@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -28,11 +28,17 @@ public class AttackState : State
     {
         zombieManager.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);
 
-        // If the zombie is being hurt, or is in some action, pause the state
+        // Si el zombi está en medio de una animación o herido, no realiza ataques
         if (zombieManager.isPerformingAction)
         {
             zombieManager.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);
             return this;
+        }
+
+        // Si el jugador no está lo suficientemente cerca, regresa a perseguirlo
+        if (zombieManager.distanceFromCurrentTarget > zombieManager.minimumAttacKDistance)
+        {
+            return pursueTargetState;
         }
 
         if (!hasPerformedAttack && zombieManager.attackCoolDownTimer <= 0)
@@ -49,13 +55,12 @@ public class AttackState : State
 
         if (hasPerformedAttack)
         {
-           ResetStateFlags();
-           return pursueTargetState;
+            ResetStateFlags();
+            return pursueTargetState;
         }
         else
         {
-           return this;
-            
+            return this;
         }
     }
 
@@ -65,24 +70,22 @@ public class AttackState : State
         {
             ZombieAttackAction zombieAttack = zombieAttackActions[i];
 
-            // Check for attack distances needed to perform the potential attack
+            // Verificar que el jugador está dentro del rango de ataque
             if (zombieManager.distanceFromCurrentTarget <= zombieAttack.maximumAttackDistance &&
                 zombieManager.distanceFromCurrentTarget >= zombieAttack.minimumAttackDistance)
             {
-                // Check for attack angles needed to perform the potential attack
+                // Verificar el ángulo de visión para permitir el ataque
                 if (zombieManager.viewableAngleFromCurrentTarget <= zombieAttack.maximumAttackAngle &&
                     zombieManager.viewableAngleFromCurrentTarget >= zombieAttack.minimumAttackAngle)
                 {
-                    // If the attack passes the distance and angle check, add it to the list of attacks we MAY perform right now
                     potentialAttacks.Add(zombieAttack);
                 }
             }
         }
 
-        int randomValue = Random.Range(0, potentialAttacks.Count);
-
         if (potentialAttacks.Count > 0)
         {
+            int randomValue = Random.Range(0, potentialAttacks.Count);
             currentAttack = potentialAttacks[randomValue];
             potentialAttacks.Clear();
         }
@@ -90,18 +93,27 @@ public class AttackState : State
 
     private void AttackTarget(ZombieManager zombieManager)
     {
+        // ⚠️ Verificar nuevamente la distancia antes de atacar
+        if (zombieManager.distanceFromCurrentTarget > zombieManager.minimumAttacKDistance)
+        {
+            return; // Si está demasiado lejos, no ataca
+        }
+
         if (currentAttack != null)
         {
             hasPerformedAttack = true;
             zombieManager.attackCoolDownTimer = currentAttack.attackCooldown;
             zombieManager.zombieAnimatorManager.PlayTargetAttackAnimation(currentAttack.attackAnimation);
 
+            // 🔊 Reproducir sonido de ataque
+            zombieManager.PlayAttackSound();
+
             if (zombieManager.currentTarget != null)
             {
                 PlayerHealthManager playerHealth = zombieManager.currentTarget.GetComponent<PlayerHealthManager>();
                 if (playerHealth != null)
                 {
-                    playerHealth.TakeDamage(15f); // Reduce un 15% de la vida total
+                    playerHealth.TakeDamage(15f);
                 }
             }
         }
@@ -115,7 +127,7 @@ public class AttackState : State
     {
         hasPerformedAttack = false;
     }
-
 }
+
 
 

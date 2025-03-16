@@ -22,6 +22,8 @@ public class PlayerManager : MonoBehaviour
     public bool canInteract;
 
     private AudioSource audioSource; // 🔊 AudioSource para sonidos de disparo
+    public AudioClip hurtSound; // 🔊 Sonido de queja cuando recibe daño
+    public AudioClip reloadSound;
 
     private void Awake()
     {
@@ -94,6 +96,22 @@ public class PlayerManager : MonoBehaviour
         if (playerEquipmentManager.currentWeapon.shootSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(playerEquipmentManager.currentWeapon.shootSound);
+        }
+    }
+
+    public void PlayHurtSound() // 🔊 Método para reproducir sonido de daño
+    {
+        if (audioSource != null && hurtSound != null)
+        {
+            audioSource.PlayOneShot(hurtSound);
+        }
+    }
+
+    public void PlayReloadSound()
+    {
+        if (reloadSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(reloadSound);
         }
     }
 }

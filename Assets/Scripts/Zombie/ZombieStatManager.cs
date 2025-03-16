@@ -7,22 +7,25 @@ public class ZombieStatManager : MonoBehaviour
     ZombieManager zombie;
 
     [Header("Damage Modifiers")]
-    public float headShotDamageMultiplier = 1.5f;
+    public float headShotDamageMultiplier = 2.5f;  // Headshots más letales
+    public float torsoDamageMultiplier = 1.0f;  // Daño normal
+    public float armDamageMultiplier = 0.5f;  // Menos impacto en brazos
+    public float legDamageMultiplier = 0.7f;  // Menos impacto en piernas
 
     [Header("Overall Health")]
-    public int overallHealth = 100; // If this health reaches 0, the zombie dies
+    public int overallHealth = 100;
 
     [Header("Head Health")]
-    public int headHealth = 100; // If this health reaches below a certain %, the head will have a chance to explode, causing instant death
+    public int headHealth = 100;
 
-    [Header("Upperbody Health")]
-    public int torsoHealth = 100; // Aside from the head, this is the best place to hit to lower overall health
-    public int leftArmHealth = 100; // Does not detract from overall health, however, has a chance to destroy the limb after reaching a certain %
-    public int rightArmHealth = 100; // Does not detract from overall health, however, has a chance to destroy the limb after reaching a certain %
+    [Header("Upper Body Health")]
+    public int torsoHealth = 100;
+    public int leftArmHealth = 100;
+    public int rightArmHealth = 100;
 
     [Header("Lower Body Health")]
-    public int leftLegHealth = 100; // Does not detract from overall health, however, has a chance to destroy the limb after reaching a certain %
-    public int rightLegHealth = 100; // Does not detract from overall health, however, has a chance to destroy the limb after reaching a certain %
+    public int leftLegHealth = 100;
+    public int rightLegHealth = 100;
 
     private void Awake()
     {
@@ -31,44 +34,44 @@ public class ZombieStatManager : MonoBehaviour
 
     public void DealHeadShotDamage(int damage)
     {
-        headHealth -= Mathf.RoundToInt(damage * headShotDamageMultiplier);
-        overallHealth -= Mathf.RoundToInt(damage * headShotDamageMultiplier);
+        int finalDamage = Mathf.RoundToInt(damage * headShotDamageMultiplier);
+        headHealth -= finalDamage;
+        overallHealth -= finalDamage; // Aplica daño directo a la salud general
         CheckForDeath();
     }
 
     public void DealTorsoDamage(int damage)
     {
-        torsoHealth -= damage;
-        overallHealth -= damage;
+        int finalDamage = Mathf.RoundToInt(damage * torsoDamageMultiplier);
+        torsoHealth -= finalDamage;
+        overallHealth -= finalDamage;
         CheckForDeath();
     }
 
     public void DealArmDamage(bool leftArmDamage, int damage)
     {
-        // Arm damage does not subtract from actual zombie health
+        int finalDamage = Mathf.RoundToInt(damage * armDamageMultiplier);
+
         if (leftArmDamage)
-        {
-            leftArmHealth -= damage;
-        }
+            leftArmHealth -= finalDamage;
         else
-        {
-            rightArmHealth -= damage;
-        }
+            rightArmHealth -= finalDamage;
+
+        overallHealth -= finalDamage; // Aplica daño directamente a la salud general
 
         CheckForDeath();
     }
 
     public void DealLegDamage(bool leftLegDamage, int damage)
     {
-        // Leg damage does not subtract from actual zombie health
+        int finalDamage = Mathf.RoundToInt(damage * legDamageMultiplier);
+
         if (leftLegDamage)
-        {
-            leftLegHealth -= damage;
-        }
+            leftLegHealth -= finalDamage;
         else
-        {
-            rightLegHealth -= damage;
-        }
+            rightLegHealth -= finalDamage;
+
+        overallHealth -= finalDamage; // Aplica daño directamente a la salud general
 
         CheckForDeath();
     }
@@ -85,5 +88,6 @@ public class ZombieStatManager : MonoBehaviour
         }
     }
 }
+
 
 

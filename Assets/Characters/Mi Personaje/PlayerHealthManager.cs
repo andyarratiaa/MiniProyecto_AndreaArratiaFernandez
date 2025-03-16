@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,22 +11,40 @@ public class PlayerHealthManager : MonoBehaviour
     public Image healthBar;
     public Animator animator;
 
-    private Vector3 startPosition; // Guardar· la posiciÛn inicial del jugador
-    private Quaternion startRotation; // Guardar· la rotaciÛn inicial del jugador
+    private Vector3 startPosition; // Posici√≥n inicial del jugador
+    private Quaternion startRotation; // Rotaci√≥n inicial del jugador
     private bool isDead = false;
 
     private Color greenColor = new Color(0f, 1f, 0f);
     private Color yellowColor = new Color(1f, 1f, 0f);
     private Color redColor = new Color(1f, 0f, 0f);
 
+    private CharacterController characterController;
+    private PlayerManager playerManager;
+    private PlayerLocomotionManager locomotionManager;
+    private InputManager inputManager;
+
     private void Start()
     {
-        currentHealth = maxHealth;
+        // Si hay una salud guardada, la recuperamos
+        if (PlayerPrefs.HasKey("PlayerHealth"))
+        {
+            currentHealth = PlayerPrefs.GetFloat("PlayerHealth");
+        }
+        else
+        {
+            currentHealth = maxHealth; // Si no hay registro, iniciar con salud m√°xima
+        }
+
         animator = GetComponent<Animator>();
 
-        // Guardar la posiciÛn y rotaciÛn inicial del jugador
         startPosition = transform.position;
         startRotation = transform.rotation;
+
+        characterController = GetComponent<CharacterController>();
+        playerManager = GetComponent<PlayerManager>();
+        locomotionManager = GetComponent<PlayerLocomotionManager>();
+        inputManager = GetComponent<InputManager>();
 
         UpdateHealthBar();
     }
@@ -36,6 +54,8 @@ public class PlayerHealthManager : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
+        playerManager.PlayHurtSound();
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -46,7 +66,7 @@ public class PlayerHealthManager : MonoBehaviour
 
     public void UpdateHealthBar()
     {
-        if (healthBar != null)
+        if(healthBar != null)
         {
             healthBar.fillAmount = currentHealth / maxHealth;
             healthBar.color = GetHealthColor();
@@ -67,6 +87,7 @@ public class PlayerHealthManager : MonoBehaviour
         }
     }
 
+
     void Die()
     {
         if (isDead) return;
@@ -74,59 +95,79 @@ public class PlayerHealthManager : MonoBehaviour
 
         Debug.Log("El jugador ha muerto.");
 
-        // Reproducir la animaciÛn de muerte
+        // Reproducir la animaci√≥n de muerte
         animator.SetTrigger("Die");
 
         // Deshabilitar el control del jugador temporalmente
-        GetComponent<PlayerManager>().enabled = false;
-        GetComponent<PlayerLocomotionManager>().enabled = false;
-        GetComponent<CharacterController>().enabled = false;
+        playerManager.enabled = false;
+        locomotionManager.enabled = false;
+        characterController.enabled = false;
+        inputManager.enabled = false;
 
-        // Deshabilitar InputManager para bloquear controles completamente
-        if (GetComponent<InputManager>() != null)
+        // Detener cualquier movimiento residual
+        if (characterController != null) characterController.SimpleMove(Vector3.zero);
+        if (GetComponent<Rigidbody>() != null)
         {
-            GetComponent<InputManager>().enabled = false;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
 
-        // Opcional: Desactivar la c·mara si deseas un efecto m·s dram·tico
-        // if (Camera.main != null) Camera.main.GetComponent<PlayerCamera>().enabled = false;
-
-        // Esperar unos segundos antes de revivir
+        // Iniciar el respawn
         StartCoroutine(RespawnPlayer());
     }
 
     IEnumerator RespawnPlayer()
     {
-        yield return new WaitForSeconds(5f); // Esperar 6 segundos antes de revivir
+        yield return new WaitForSeconds(5f); // Esperar antes de revivir
+
+        // Desactivar el Animator antes de mover al personaje
+        animator.enabled = false;
+
+        // Restaurar posici√≥n y rotaci√≥n
+        transform.position = startPosition;
+        transform.rotation = startRotation;
 
         // Restaurar salud y la barra de vida
         currentHealth = maxHealth;
         UpdateHealthBar();
 
-        // Restaurar posiciÛn y rotaciÛn del jugador
-        transform.position = startPosition;
-        transform.rotation = startRotation;
+        // Reactivar el Animator
+        animator.enabled = true;
+        animator.ResetTrigger("Die");
+        animator.SetTrigger("Respawn"); // Transici√≥n de Death a Stand Up
+        animator.Play("Stand Up");
 
-        // Habilitar nuevamente los scripts del jugador
-        GetComponent<PlayerManager>().enabled = true;
-        GetComponent<PlayerLocomotionManager>().enabled = true;
-        GetComponent<CharacterController>().enabled = true;
+        // Esperar a que termine la animaci√≥n de Stand Up
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
 
-        // Reactivar InputManager
-        if (GetComponent<InputManager>() != null)
-        {
-            GetComponent<InputManager>().enabled = true;
-        }
+        // Reactivar control del jugador
+        playerManager.enabled = true;
+        locomotionManager.enabled = true;
+        characterController.enabled = true;
+        inputManager.enabled = true;
 
-        // Opcional: Reactivar la c·mara si se habÌa desactivado
-        // if (Camera.main != null) Camera.main.GetComponent<PlayerCamera>().enabled = true;
+        // Resetear input para que no se mueva solo
+        ResetPlayerInput();
+
+        // Cambiar a la animaci√≥n de locomotion
+        animator.SetTrigger("StandUpFinished");
 
         // Resetear el estado de muerte
         isDead = false;
 
-        Debug.Log("El jugador ha revivido en el punto de inicio.");
+        Debug.Log("El jugador ha revivido correctamente.");
+    }
+
+    void ResetPlayerInput()
+    {
+        if (inputManager != null)
+        {
+            inputManager.ResetInputs(); // Debes implementar este m√©todo en InputManager
+        }
     }
 }
+
+
 
 
 

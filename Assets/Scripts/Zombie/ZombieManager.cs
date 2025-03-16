@@ -40,6 +40,13 @@ public class ZombieManager : MonoBehaviour
     public float minimumAttacKDistance = 1f;
     public float maximumAttackDistance = 1.5f;
 
+    [Header("Zombie Audio")] // 🔊 NUEVO
+    public AudioSource audioSource;
+    //public AudioClip walkSound;
+    public AudioClip attackSound;
+    public AudioClip deathSound;
+    public AudioClip damageSound;
+
     //[Header("Key Drop")]
     //public GameObject keyObject; // Referencia a la llave en la jerarquía
 
@@ -52,11 +59,12 @@ public class ZombieManager : MonoBehaviour
         zombieAnimatorManager = GetComponent<ZombieAnimatorManager>();
         zombieStatManager = GetComponent<ZombieStatManager>();
 
-        //// Asegurarse de que la llave está desactivada al inicio
-        //if (keyObject != null)
-        //{
-        //    keyObject.SetActive(false);
-        //}
+        // 🔊 Inicializar el AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     private void FixedUpdate()
@@ -140,12 +148,45 @@ public class ZombieManager : MonoBehaviour
         //}
     }
 
+    //public void PlayWalkSound()
+    //{
+    //    if (audioSource != null && walkSound != null && !audioSource.isPlaying)
+    //    {
+    //        audioSource.PlayOneShot(walkSound);
+    //    }
+    //}
+
+    public void PlayAttackSound()
+    {
+        if (audioSource != null && attackSound != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+    }
+
+    public void PlayDeathSound()
+    {
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
+    }
+
+    public void PlayDamageSound() // 🔊 Nuevo método para reproducir sonido de daño
+    {
+        if (audioSource != null && damageSound != null)
+        {
+            audioSource.PlayOneShot(damageSound);
+        }
+    }
+
     public void Die()
     {
         if (isDead)
             return;
 
         isDead = true;
+        PlayDeathSound();
         HandleDeath();
     }
 }
