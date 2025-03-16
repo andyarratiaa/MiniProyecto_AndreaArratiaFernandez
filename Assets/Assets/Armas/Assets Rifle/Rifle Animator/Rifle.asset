@@ -21,3 +21,5 @@ MonoBehaviour:
   remainingAmmo: 10
   maxAmmo: 10
   ammoType: 0
+  weaponIcon: {fileID: 21300000, guid: 5614a811150170a478d959226babc5e3, type: 3}
+  weaponIconSize: {x: 309, y: 93}

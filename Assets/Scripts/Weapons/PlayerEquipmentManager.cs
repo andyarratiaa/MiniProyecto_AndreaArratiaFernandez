@@ -59,9 +59,13 @@ public class PlayerEquipmentManager : MonoBehaviour
 
         playerManager.animatorManager.AssignHandIK(rightHandIK, leftHandIK);
 
+        // Actualizar la UI del contador de balas
         playerManager.playerUIManager.currentAmmoCountText.text = currentWeapon.remainingAmmo.ToString();
 
-        // Check for ammo that supports this weapon in our inventory
+        // **Actualizar la UI del arma (imagen y tamaño)**
+        playerManager.playerUIManager.UpdateWeaponUI(currentWeapon.weaponIcon, currentWeapon.weaponIconSize);
+
+        // Comprobar la munición en el inventario
         if (playerManager.playerInventoryManager.currentAmmoInInventory != null)
         {
             if (playerManager.playerInventoryManager.currentAmmoInInventory.ammoType == currentWeapon.ammoType)
@@ -69,7 +73,6 @@ public class PlayerEquipmentManager : MonoBehaviour
                 playerManager.playerUIManager.reservedAmmoCountText.text = playerManager.playerInventoryManager.currentAmmoInInventory.ammoRemaining.ToString();
             }
         }
-
     }
     public void SwitchWeapon()
     {

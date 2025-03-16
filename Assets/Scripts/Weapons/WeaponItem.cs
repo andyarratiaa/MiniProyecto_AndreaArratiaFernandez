@@ -20,5 +20,8 @@ public class WeaponItem : Item
 
     public AmmoType ammoType;
 
+    [Header("Weapon UI")]
+    public Sprite weaponIcon;
+    public Vector2 weaponIconSize = new Vector2(100, 100); // Tamaño por defecto
 }
 
