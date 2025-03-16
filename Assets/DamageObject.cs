@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class DamageObject : MonoBehaviour
 {
-    public float damagePercentage = 10f; // 10% de la vida máxima del jugador
+    public float damagePercentage = 2f; // 10% de la vida máxima del jugador
     public ParticleSystem hitEffect; // Efecto visual (VFX) que se activará
+    public Transform vfxSpawnPoint; // Punto donde se activará el efecto visual
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,8 +21,22 @@ public class DamageObject : MonoBehaviour
             // Activa el efecto visual si está asignado
             if (hitEffect != null)
             {
-                hitEffect.Play();
+                PlayVFX();
             }
         }
     }
+
+    void PlayVFX()
+    {
+        if (hitEffect != null)
+        {
+            // Si el VFX está dentro del objeto, lo instanciamos en una nueva posición
+            ParticleSystem vfxInstance = Instantiate(hitEffect, vfxSpawnPoint ? vfxSpawnPoint.position : transform.position, Quaternion.identity);
+            vfxInstance.Play();
+
+            // Destruir la instancia después de su duración
+            Destroy(vfxInstance.gameObject, vfxInstance.main.duration);
+        }
+    }
 }
+
