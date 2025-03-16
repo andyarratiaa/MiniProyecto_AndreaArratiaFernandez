@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class WeaponLoaderSlot : MonoBehaviour
@@ -11,8 +10,7 @@ public class WeaponLoaderSlot : MonoBehaviour
     {
         if (currentWeaponModel != null)
         {
-            // Verifica que el objeto está instanciado en la escena y no es un asset
-            if (currentWeaponModel.scene.IsValid())
+            if (currentWeaponModel.scene.IsValid()) // Asegurar que está en la escena
             {
                 Destroy(currentWeaponModel);
             }
@@ -23,13 +21,13 @@ public class WeaponLoaderSlot : MonoBehaviour
     {
         UnloadAndDestroyWeapon();
 
-        if (weapon == null)
+        if (weapon == null || weapon.itemModel == null)
         {
             return;
         }
 
-        // Instanciar solo si es un prefab y no un asset en sí mismo
-        if (weapon.itemModel != null && PrefabUtility.IsPartOfPrefabAsset(weapon.itemModel))
+        // Instanciar solo si no está en la escena (evita duplicados)
+        if (weapon.itemModel.scene.rootCount == 0)
         {
             GameObject weaponModel = Instantiate(weapon.itemModel, transform);
             weaponModel.transform.localPosition = Vector3.zero;
@@ -39,5 +37,6 @@ public class WeaponLoaderSlot : MonoBehaviour
         }
     }
 }
+
 
 
