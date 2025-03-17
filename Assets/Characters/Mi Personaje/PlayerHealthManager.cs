@@ -118,7 +118,6 @@ public class PlayerHealthManager : MonoBehaviour
 
     IEnumerator RespawnPlayer()
     {
-        yield return new WaitForSeconds(2f); // Esperar antes de revivir
 
         // Desactivar el Animator antes de mover al personaje
         animator.enabled = false;
