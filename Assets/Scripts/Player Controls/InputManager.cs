@@ -37,7 +37,6 @@ public class InputManager : MonoBehaviour
     private float verticalVelocity = 0f;
     private bool isGrounded;
 
-
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
@@ -66,7 +65,6 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Shoot.performed += i => shootInput = true;
             playerControls.PlayerActions.Shoot.canceled += i => shootInput = false;
             playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
-
         }
 
         playerControls.Enable();
@@ -93,25 +91,6 @@ public class InputManager : MonoBehaviour
         HandleAimingInput();
         HandleShootingInput();
         HandleReloadInput();
-    }
-
-    private void HandleMovementInput()
-    {
-        horizontalMovementInput = movementInput.x;
-        verticalMovementInput = movementInput.y;
-        animatorManager.HandleAnimatorValues(horizontalMovementInput, verticalMovementInput, runInput);
-
-        //TEMP
-        if (verticalMovementInput != 0 || horizontalMovementInput != 0)
-        {
-            animatorManager.rightHandIK.weight = 0;
-            animatorManager.leftHandIK.weight = 0;
-        }
-        else
-        {
-            animatorManager.rightHandIK.weight = 1;
-            animatorManager.leftHandIK.weight = 1;
-        }
     }
 
     private void HandleCameraInput()
@@ -142,36 +121,115 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void HandleShootingInput()
+    {
+        if (shootInput && aimingInput)
+        {
+            WeaponItem currentWeapon = player.playerEquipmentManager.currentWeapon;
+
+            if (currentWeapon.remainingAmmo > 0)
+            {
+                Debug.Log("Disparando con " + currentWeapon.remainingAmmo + " balas restantes.");
+                shootInput = false;
+                player.UseCurrentWeapon();
+            }
+            else
+            {
+                Debug.Log("Sin balas. Intentando recargar.");
+                HandleReloadInput();
+            }
+        }
+    }
+
+    private void HandleReloadInput()
+    {
+        if (player.isPreformingAction) return;
+
+        if (reloadInput)
+        {
+            reloadInput = false;
+
+            WeaponItem currentWeapon = player.playerEquipmentManager.currentWeapon;
+            BoxOfAmmoItem ammoInventory = player.playerInventoryManager.currentAmmoInInventory;
+
+            if (currentWeapon.remainingAmmo == currentWeapon.maxAmmo)
+            {
+                Debug.Log("El arma ya está completamente cargada.");
+                return;
+            }
+
+            if (ammoInventory != null && ammoInventory.ammoType == currentWeapon.ammoType)
+            {
+                if (ammoInventory.ammoRemaining == 0)
+                {
+                    Debug.Log("No hay munición en el inventario.");
+                    return;
+                }
+
+                int ammoNeeded = currentWeapon.maxAmmo - currentWeapon.remainingAmmo;
+
+                if (ammoInventory.ammoRemaining >= ammoNeeded)
+                {
+                    currentWeapon.remainingAmmo += ammoNeeded;
+                    ammoInventory.ammoRemaining -= ammoNeeded;
+                }
+                else
+                {
+                    currentWeapon.remainingAmmo += ammoInventory.ammoRemaining;
+                    ammoInventory.ammoRemaining = 0;
+                }
+
+                // Reproduce la animación de recarga pero no bloquea el disparo
+                player.animatorManager.PlayAnimation("Reload", false);
+                player.PlayReloadSound();
+
+                // Forzar actualización inmediata del contador de balas
+                player.playerUIManager.currentAmmoCountText.text = currentWeapon.remainingAmmo.ToString();
+                player.playerUIManager.reservedAmmoCountText.text = ammoInventory.ammoRemaining.ToString();
+
+                Debug.Log("Recarga completada. Balas en el arma: " + currentWeapon.remainingAmmo);
+
+                // ❌ NO ACTIVAR `shootInput = true;` después de recargar
+            }
+        }
+    }
+
+    private void HandleMovementInput()
+    {
+        horizontalMovementInput = movementInput.x;
+        verticalMovementInput = movementInput.y;
+        animatorManager.HandleAnimatorValues(horizontalMovementInput, verticalMovementInput, runInput);
+
+        if (verticalMovementInput != 0 || horizontalMovementInput != 0)
+        {
+            animatorManager.rightHandIK.weight = 0;
+            animatorManager.leftHandIK.weight = 0;
+        }
+        else
+        {
+            animatorManager.rightHandIK.weight = 1;
+            animatorManager.leftHandIK.weight = 1;
+        }
+    }
+
     private void HandleGravityAndGrounding()
     {
-        // Verificamos si el personaje está tocando el suelo con un raycast
         RaycastHit hit;
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, out hit, groundCheckDistance);
 
-        if (isGrounded)
-        {
-            verticalVelocity = -2f; // Pequeña fuerza para mantener contacto con el suelo
-        }
-        else
-        {
-            verticalVelocity -= gravity * Time.deltaTime;
-        }
+        verticalVelocity = isGrounded ? -2f : verticalVelocity - (gravity * Time.deltaTime);
     }
 
     private void ApplyMovement()
     {
-        // Mantener el movimiento en el plano horizontal sin afectar la altura
         Vector3 moveDir = transform.right * horizontalMovementInput + transform.forward * verticalMovementInput;
         moveDir.Normalize();
 
-        // Aplicar la velocidad y la gravedad
         Vector3 finalMove = moveDir * moveSpeed * Time.deltaTime;
         finalMove.y = verticalVelocity * Time.deltaTime;
 
         characterController.Move(finalMove);
-
-        // Resetear el input de salto después de aplicarlo
         jumpInput = false;
     }
 
@@ -185,88 +243,9 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        if (aimingInput)
-        {
-            animator.SetBool("isAiming", true);
-            playerUIManager.crossHair.SetActive(true);
-
-        }
-        else
-        {
-            animator.SetBool("isAiming", false);
-            playerUIManager.crossHair.SetActive(false);
-
-        }
-
+        animator.SetBool("isAiming", aimingInput);
+        playerUIManager.crossHair.SetActive(aimingInput);
         animatorManager.UpdateAimConstraints();
-    }
-
-    private void HandleShootingInput()
-    {
-        if (shootInput && aimingInput)
-        {
-            shootInput = false;
-            //Debug.Log("Bang");
-            player.UseCurrentWeapon();
-        }
-    }
-
-    private void HandleReloadInput()
-    {
-        // We do not want to be able to reload while being damaged, shooting, quick turning etc
-        if (player.isPreformingAction)
-            return;
-
-        if (reloadInput)
-        {
-            reloadInput = false;
-
-            // Check to see if our weapon is currently full, if it is return
-            if (player.playerEquipmentManager.currentWeapon.remainingAmmo == player.playerEquipmentManager.currentWeapon.maxAmmo)
-            {
-                Debug.Log("AMMO ALREADY FULL");
-                return;
-            }
-
-            // Check to see if we have ammo in our inventory for this particular weapon, if we do not, return
-            if (player.playerInventoryManager.currentAmmoInInventory != null)
-            {
-                if (player.playerInventoryManager.currentAmmoInInventory.ammoType == player.playerEquipmentManager.currentWeapon.ammoType)
-                {
-                    if (player.playerInventoryManager.currentAmmoInInventory.ammoRemaining == 0)
-                    {
-                        return;
-                    }
-                    int amountOfAmmoToReload;
-                    amountOfAmmoToReload = player.playerEquipmentManager.currentWeapon.maxAmmo - player.playerEquipmentManager.currentWeapon.remainingAmmo;
-
-                    //If we have more ammo remaining than we need to drop into our weapon, we substract the amount needed from out TOTAL AMOUNT in our players inventory
-                    if (player.playerInventoryManager.currentAmmoInInventory.ammoRemaining >= amountOfAmmoToReload)
-                    {
-                        player.playerEquipmentManager.currentWeapon.remainingAmmo = player.playerEquipmentManager.currentWeapon.remainingAmmo + amountOfAmmoToReload;
-                        player.playerInventoryManager.currentAmmoInInventory.ammoRemaining =
-                            player.playerInventoryManager.currentAmmoInInventory.ammoRemaining - amountOfAmmoToReload;
-                    }
-                    else
-                    {
-                        player.playerEquipmentManager.currentWeapon.remainingAmmo = player.playerInventoryManager.currentAmmoInInventory.ammoRemaining;
-                        player.playerInventoryManager.currentAmmoInInventory.ammoRemaining = 0;
-                    }
-
-                    player.animatorManager.ClearHandIKWeights();
-                    player.animatorManager.PlayAnimation("Reload", true);
-                    player.PlayReloadSound(); // 🔊 Reproduce el sonido de recarga
-
-                    // PLACE MORE AMMO IN THE WEAPON
-                    player.playerUIManager.currentAmmoCountText.text = player.playerEquipmentManager.currentWeapon.remainingAmmo.ToString();
-
-                    player.playerUIManager.reservedAmmoCountText.text = player.playerInventoryManager.currentAmmoInInventory.ammoRemaining.ToString();
-
-                    // UPDATE RESERVED AMMO COUNT
-                    // SUBTRACT THE PLACED AMMO FROM OUR INVENTORY
-                }
-            }
-        }
     }
 
     public void ResetInputs()
@@ -285,5 +264,3 @@ public class InputManager : MonoBehaviour
         reloadInput = false;
     }
 }
-
-

@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/EscenarioPrueba.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: "Assets/Scenes/MEN\xDA INICIO.unity"
+    guid: e96e6daf86a66724a93abfd7a252dce7
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 669716b1cdf60e943962eae184f2693e
   - enabled: 1
