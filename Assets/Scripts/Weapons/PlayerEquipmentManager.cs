@@ -31,7 +31,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
         {
             SwitchWeapon();
         }
