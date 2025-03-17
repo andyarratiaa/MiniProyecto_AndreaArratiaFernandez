@@ -87,7 +87,7 @@ public class ControlPuerta : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        yield return new WaitForSeconds(1.75f); // Pequeña pausa antes de cambiar de escena
+        yield return new WaitForSeconds(1.25f); // Pequeña pausa antes de cambiar de escena
 
         // Guardar la posición de llegada en PlayerPrefs
         if (posicionLlegada != null)
