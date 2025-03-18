@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     Animator animator;
     PlayerManager player;
     PlayerUIManager playerUIManager;
+    PlayerCamera playerCamera; // Debe estar declarada aquí
 
     [Header("Player Movement")]
     public float verticalMovementInput;
@@ -33,6 +34,10 @@ public class InputManager : MonoBehaviour
     public bool aimingInput;
     public bool reloadInput;
 
+    [Header("Pause System")]
+    public GameObject PausePanel;
+    private bool isPaused = false;
+
     private Vector3 moveDirection;
     private float verticalVelocity = 0f;
     private bool isGrounded;
@@ -44,6 +49,10 @@ public class InputManager : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GetComponent<PlayerManager>();
         playerUIManager = FindObjectOfType<PlayerUIManager>();
+        playerCamera = FindObjectOfType<PlayerCamera>();
+
+        // Asegurar que el menú de pausa está oculto al inicio
+        PausePanel.SetActive(false);
     }
 
     private void OnEnable()
@@ -65,6 +74,7 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Shoot.performed += i => shootInput = true;
             playerControls.PlayerActions.Shoot.canceled += i => shootInput = false;
             playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
+            playerControls.PlayerActions.Pause.performed += i => TogglePause(); // Detecta el input de pausa
         }
 
         playerControls.Enable();
@@ -77,6 +87,8 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
+        if (isPaused) return; // Bloqueamos inputs mientras está pausado
+
         HandleAllInputs();
         HandleGravityAndGrounding();
         ApplyMovement();
@@ -91,6 +103,43 @@ public class InputManager : MonoBehaviour
         HandleAimingInput();
         HandleShootingInput();
         HandleReloadInput();
+    }
+
+    public void TogglePause()
+    {
+        if (isPaused)
+        {
+            ContinueGame(); // ✅ Llama a la función de continuar si está pausado
+        }
+        else
+        {
+            PauseGame(); // ✅ Pausa el juego si no está pausado
+        }
+    }
+
+    public void PauseGame()
+    {
+        PausePanel.SetActive(true);
+        Time.timeScale = 0;
+        isPaused = true;
+
+        // ✅ Evitar error asegurando que playerCamera no sea null
+        if (playerCamera != null)
+            playerCamera.enabled = false;
+
+        playerControls.Disable();
+    }
+
+    public void ContinueGame() // ✅ Función para reanudar desde el botón del menú
+    {
+        PausePanel.SetActive(false);
+        Time.timeScale = 1;
+        isPaused = false;
+
+        if (playerCamera != null)
+            playerCamera.enabled = true;
+
+        playerControls.Enable();
     }
 
     private void HandleCameraInput()
