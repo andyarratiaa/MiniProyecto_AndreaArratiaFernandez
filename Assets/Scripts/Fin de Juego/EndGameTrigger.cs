@@ -9,7 +9,7 @@ public class EndGameTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player")) // ✅ Solo el jugador puede activar el fin de la partida
         {
-            Debug.Log("🎉 Fin de la partida alcanzado.");
+            Debug.Log("Fin de la partida alcanzado.");
             endGamePanel.SetActive(true); // 🔹 Muestra el panel de fin de partida
             DisablePlayerControls(); // 🔹 Bloquea los controles del jugador
             ShowCursor(); // 🔹 Muestra el cursor
@@ -66,7 +66,7 @@ public class EndGameTrigger : MonoBehaviour
     {
         Cursor.visible = true; // 🔹 Hace visible el cursor
         Cursor.lockState = CursorLockMode.None; // 🔹 Desbloquea el cursor
-        Debug.Log("🖱️ Cursor activado.");
+        Debug.Log("Cursor activado.");
     }
 }
 
