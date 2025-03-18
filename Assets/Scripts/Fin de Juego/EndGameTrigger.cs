@@ -12,6 +12,7 @@ public class EndGameTrigger : MonoBehaviour
             Debug.Log("🎉 Fin de la partida alcanzado.");
             endGamePanel.SetActive(true); // 🔹 Muestra el panel de fin de partida
             DisablePlayerControls(); // 🔹 Bloquea los controles del jugador
+            ShowCursor(); // 🔹 Muestra el cursor
         }
     }
 
@@ -57,10 +58,18 @@ public class EndGameTrigger : MonoBehaviour
                 playerCamera.enabled = false;
             }
 
-            Debug.Log("🛑 Controles del jugador y animaciones deshabilitados.");
+            Debug.Log("Controles del jugador y animaciones deshabilitados.");
         }
     }
+
+    private void ShowCursor()
+    {
+        Cursor.visible = true; // 🔹 Hace visible el cursor
+        Cursor.lockState = CursorLockMode.None; // 🔹 Desbloquea el cursor
+        Debug.Log("🖱️ Cursor activado.");
+    }
 }
+
 
 
 
