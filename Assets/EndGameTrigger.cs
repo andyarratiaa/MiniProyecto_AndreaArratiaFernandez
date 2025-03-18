@@ -19,14 +19,6 @@ public class EndGameTrigger : MonoBehaviour
     {
         if (player != null)
         {
-            // 🔹 Bloquear la animación y dejar al jugador en Idle
-            Animator animator = player.GetComponent<Animator>();
-            if (animator != null)
-            {
-                animator.Play("Idle"); // 🔹 Forzar al estado Idle
-                animator.speed = 0;    // 🔹 Congelar cualquier animación en curso
-            }
-
             // 🔹 Deshabilitar el InputManager para bloquear controles
             InputManager inputManager = player.GetComponent<InputManager>();
             if (inputManager != null)
@@ -41,15 +33,6 @@ public class EndGameTrigger : MonoBehaviour
                 characterController.enabled = false;
             }
 
-            // 🔹 Detener cualquier movimiento acumulado
-            Rigidbody rb = player.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true; // 🔹 Evita que fuerzas externas lo muevan
-            }
-
             // 🔹 Bloquear la cámara si es necesario
             PlayerCamera playerCamera = player.GetComponent<PlayerCamera>();
             if (playerCamera != null)
@@ -57,10 +40,9 @@ public class EndGameTrigger : MonoBehaviour
                 playerCamera.enabled = false;
             }
 
-            Debug.Log("🛑 Controles del jugador y animaciones deshabilitados.");
+            Debug.Log("🛑 Controles del jugador deshabilitados.");
         }
     }
 }
-
 
 
