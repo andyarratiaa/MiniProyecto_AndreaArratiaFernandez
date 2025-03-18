@@ -89,9 +89,6 @@ public class AnimatorManager : MonoBehaviour
         if (playerManager.disableRootMotion)
             return;
 
-        if (Time.deltaTime == 0) // Evita la división por 0 cuando el juego está en pausa
-            return;
-
         Vector3 animatorDeltaPosition = animator.deltaPosition;
         animatorDeltaPosition.y = 0;
 
