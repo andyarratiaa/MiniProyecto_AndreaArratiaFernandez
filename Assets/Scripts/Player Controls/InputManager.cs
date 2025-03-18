@@ -53,6 +53,8 @@ public class InputManager : MonoBehaviour
 
         // Asegurar que el menú de pausa está oculto al inicio
         PausePanel.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void OnEnable()
@@ -123,6 +125,10 @@ public class InputManager : MonoBehaviour
         Time.timeScale = 0;
         isPaused = true;
 
+        // Mostrar cursor en el menú de pausa
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         // ✅ Evitar error asegurando que playerCamera no sea null
         if (playerCamera != null)
             playerCamera.enabled = false;
@@ -135,6 +141,10 @@ public class InputManager : MonoBehaviour
         PausePanel.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
+
+        // Ocultar cursor al volver al juego
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         if (playerCamera != null)
             playerCamera.enabled = true;
