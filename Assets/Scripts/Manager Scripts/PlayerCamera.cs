@@ -35,9 +35,17 @@ public class PlayerCamera : MonoBehaviour
         inputManager = player.GetComponent<InputManager>();
         playerManager = player.GetComponent<PlayerManager>();
     }
+    private void Update()
+    {
+        if (Time.timeScale == 0) // Bloquear la cámara si el juego está pausado
+            return;
+
+        HandleAllCameraMovement();
+    }
 
     public void HandleAllCameraMovement()
     {
+
         FollowPlayer();
         RotateCamera();
     }
