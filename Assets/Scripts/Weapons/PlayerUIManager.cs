@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -13,19 +13,32 @@ public class PlayerUIManager : MonoBehaviour
     public TMP_Text currentAmmoCountText;
     public TMP_Text reservedAmmoCountText;
 
-    public Image weaponIconImage; // Imagen del arma en la UI
+    [Header("Weapon UI")]
+    public GameObject pistolIcon;  // Icono de la pistola
+    public GameObject rifleIcon;   // Icono del rifle
 
-    public void UpdateWeaponUI(Sprite newIcon, Vector2 newSize)
+    private void Start()
     {
-        if (weaponIconImage != null && newIcon != null)
+        // 🔥 Asegurar que al inicio la pistola esté activada
+        UpdateWeaponUI("Pistol");
+    }
+
+    public void UpdateWeaponUI(string currentWeaponName)
+    {
+        // Desactiva todos los iconos
+        pistolIcon.SetActive(false);
+        rifleIcon.SetActive(false);
+
+        // Activa el icono según el arma actual
+        if (currentWeaponName == "Pistola")
         {
-            weaponIconImage.sprite = newIcon;
-            RectTransform rectTransform = weaponIconImage.GetComponent<RectTransform>();
-            if (rectTransform != null)
-            {
-                rectTransform.sizeDelta = newSize; // Ajusta el tama�o
-            }
+            pistolIcon.SetActive(true);
+        }
+        else if (currentWeaponName == "Rifle")
+        {
+            rifleIcon.SetActive(true);
         }
     }
 }
+
 

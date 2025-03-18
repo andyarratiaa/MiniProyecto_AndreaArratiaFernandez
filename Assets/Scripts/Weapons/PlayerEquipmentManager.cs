@@ -59,7 +59,7 @@ public class PlayerEquipmentManager : MonoBehaviour
         playerManager.playerUIManager.currentAmmoCountText.text = currentWeapon.remainingAmmo.ToString();
 
         // Actualizar el icono del arma en la UI
-        playerManager.playerUIManager.UpdateWeaponUI(currentWeapon.weaponIcon, currentWeapon.weaponIconSize);
+        playerManager.playerUIManager.UpdateWeaponUI(currentWeapon.weaponName);
 
         if (playerManager.playerInventoryManager.currentAmmoInInventory != null)
         {

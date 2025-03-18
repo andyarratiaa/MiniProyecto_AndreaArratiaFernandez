@@ -12,10 +12,10 @@ public class ControlPuerta : MonoBehaviour
     public string nombreEscenaDestino; // Nombre de la escena a la que se cambiará
     public Transform posicionLlegada; // Posición donde aparecerá el jugador en la siguiente escena
 
-
-
-    private AudioSource audioSource; // 🔊 AudioSource para sonidos de disparo
+    private AudioSource audioSource; // 🔊 AudioSource para sonidos de la puerta
     public AudioClip openDoor;
+
+    public GameObject objetoActivar; // 🔥 El GameObject que se activará al obtener la llave
 
     private void Awake()
     {
@@ -29,6 +29,12 @@ public class ControlPuerta : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        // 🔥 Asegurarse de que el objeto está desactivado al inicio
+        if (objetoActivar != null)
+        {
+            objetoActivar.SetActive(false);
+        }
     }
 
     void OnTriggerEnter(Collider col)
@@ -74,9 +80,14 @@ public class ControlPuerta : MonoBehaviour
     {
         tieneLlave = true;
         Debug.Log("Has obtenido la llave para estas puertas.");
+
+        // 🔥 Activar el objeto cuando se obtiene la llave
+        if (objetoActivar != null)
+        {
+            objetoActivar.SetActive(true);
+        }
     }
 
-    // Método para cambiar de escena con una pequeña espera
     // Método para cambiar de escena con una pequeña espera
     IEnumerator CambiarEscena()
     {
@@ -108,6 +119,7 @@ public class ControlPuerta : MonoBehaviour
         }
     }
 }
+
 
 
 
