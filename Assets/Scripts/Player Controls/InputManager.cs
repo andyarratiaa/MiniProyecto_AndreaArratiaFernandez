@@ -50,7 +50,6 @@ public class InputManager : MonoBehaviour
         player = GetComponent<PlayerManager>();
         playerUIManager = FindObjectOfType<PlayerUIManager>();
         playerCamera = FindObjectOfType<PlayerCamera>();
-
         //Asegurar que el menú de pausa está oculto al inicio
         PausePanel.SetActive(false);
         Cursor.visible = false;
@@ -94,6 +93,8 @@ public class InputManager : MonoBehaviour
         HandleAllInputs();
         HandleGravityAndGrounding();
         ApplyMovement();
+
+        
     }
 
     public void HandleAllInputs()
@@ -225,7 +226,7 @@ public class InputManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("❌ Sin balas. Intentando recargar...");
+                Debug.Log("Sin balas. Intentando recargar...");
                 HandleReloadInput();
             }
         }
