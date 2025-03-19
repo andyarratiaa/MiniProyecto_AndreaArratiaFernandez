@@ -129,14 +129,22 @@ public class InputManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // ✅ Evitar error asegurando que playerCamera no sea null
+        // ✅ Deshabilitar la cámara para evitar que siga rotando
         if (playerCamera != null)
+        {
             playerCamera.enabled = false;
+        }
+
+        // ✅ Resetear inputs de la cámara para evitar que siga en movimiento
+        horizontalCameraInput = 0f;
+        verticalCameraInput = 0f;
+        cameraInput = Vector2.zero;
 
         playerControls.Disable();
     }
 
-    public void ContinueGame() // ✅ Función para reanudar desde el botón del menú
+
+    public void ContinueGame()
     {
         PausePanel.SetActive(false);
         Time.timeScale = 1;
@@ -147,10 +155,18 @@ public class InputManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         if (playerCamera != null)
+        {
             playerCamera.enabled = true;
+        }
+
+        // ✅ También reiniciamos los valores de entrada al volver al juego
+        cameraInput = Vector2.zero;
+        horizontalCameraInput = 0f;
+        verticalCameraInput = 0f;
 
         playerControls.Enable();
     }
+
 
     private void HandleCameraInput()
     {
@@ -182,23 +198,44 @@ public class InputManager : MonoBehaviour
 
     private void HandleShootingInput()
     {
-        if (shootInput && aimingInput)
+        if (shootInput) // 🔹 Se ejecuta cada vez que el jugador presiona el botón
         {
             WeaponItem currentWeapon = player.playerEquipmentManager.currentWeapon;
 
             if (currentWeapon.remainingAmmo > 0)
             {
-                Debug.Log("Disparando con " + currentWeapon.remainingAmmo + " balas restantes.");
-                shootInput = false;
+                Debug.Log("🔫 Disparando con " + currentWeapon.remainingAmmo + " balas restantes.");
+
                 player.UseCurrentWeapon();
+
+                // 🔹 Mantener el input activo por un pequeño tiempo para evitar que se pierda
+                StartCoroutine(ResetShootInput());
+
+                // 🔹 Evitar que el Animator bloquee el disparo
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
+                {
+                    Debug.Log("📌 La animación de disparo ya está en curso.");
+                }
+                else
+                {
+                    animator.Play("Shoot");
+                }
             }
             else
             {
-                Debug.Log("Sin balas. Intentando recargar.");
+                Debug.Log("❌ Sin balas. Intentando recargar...");
                 HandleReloadInput();
             }
         }
     }
+
+    // 🔹 Método para evitar que `shootInput` se desactive instantáneamente
+    private IEnumerator ResetShootInput()
+    {
+        yield return new WaitForSeconds(0.1f); // 🔹 Pequeña espera para procesar la acción
+        shootInput = false; // 🔹 Ahora sí, se cancela el input
+    }
+
 
     private void HandleReloadInput()
     {
