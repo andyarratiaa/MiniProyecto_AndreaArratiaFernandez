@@ -44,7 +44,7 @@ public class HealthPickup : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.Return)) // Espera a que el jugador presione Enter
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E)) // Espera a que el jugador presione Enter
         {
             PickupHealth();
         }
