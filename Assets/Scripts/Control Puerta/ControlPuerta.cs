@@ -8,14 +8,14 @@ public class ControlPuerta : MonoBehaviour
     Animator anim;
     public bool Dentro = false;
     bool puerta = false;
-    public bool tieneLlave = false; // La puerta solo se abre si tiene la llave
-    public string nombreEscenaDestino; // Nombre de la escena a la que se cambiará
-    public Transform posicionLlegada; // Posición donde aparecerá el jugador en la siguiente escena
+    public bool tieneLlave = false; //La puerta solo se abre si tiene la llave
+    public string nombreEscenaDestino; //Nombre de la escena a la que se cambiará
+    public Transform posicionLlegada; //Posición donde aparecerá el jugador en la siguiente escena
 
-    private AudioSource audioSource; // 🔊 AudioSource para sonidos de la puerta
+    private AudioSource audioSource; //AudioSource para sonidos de la puerta
     public AudioClip openDoor;
 
-    public GameObject objetoActivar; // 🔥 El GameObject que se activará al obtener la llave
+    public GameObject objetoActivar; //El GameObject que se activará al obtener la llave
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class ControlPuerta : MonoBehaviour
     {
         anim = GetComponent<Animator>();
 
-        // 🔥 Asegurarse de que el objeto está desactivado al inicio
+        //Asegurarse de que el objeto está desactivado al inicio
         if (objetoActivar != null)
         {
             objetoActivar.SetActive(false);
@@ -57,12 +57,12 @@ public class ControlPuerta : MonoBehaviour
     {
         if (Dentro && Input.GetKeyDown(KeyCode.E))
         {
-            if (tieneLlave) // Si el jugador tiene la llave correcta
+            if (tieneLlave) //Si el jugador tiene la llave correcta
             {
                 puerta = !puerta;
                 anim.SetBool("Abierto", puerta);
 
-                if (puerta) // Si la puerta se abre, cambiar de escena
+                if (puerta) //Si la puerta se abre, cambiar de escena
                 {
                     PlayDoorSound();
                     StartCoroutine(CambiarEscena());
@@ -75,7 +75,7 @@ public class ControlPuerta : MonoBehaviour
         }
     }
 
-    // Método para asignar la llave a esta puerta (llamado desde el script de la llave)
+    //Método para asignar la llave a esta puerta (llamado desde el script de la llave)
     public void ObtenerLlave()
     {
         tieneLlave = true;
@@ -88,19 +88,19 @@ public class ControlPuerta : MonoBehaviour
         }
     }
 
-    // Método para cambiar de escena con una pequeña espera
+    //Método para cambiar de escena con una pequeña espera
     IEnumerator CambiarEscena()
     {
-        // Guardar la salud del jugador antes de cambiar de escena
+        //Guardar la salud del jugador antes de cambiar de escena
         if (FindObjectOfType<PlayerHealthManager>() != null)
         {
             PlayerPrefs.SetFloat("PlayerHealth", FindObjectOfType<PlayerHealthManager>().currentHealth);
             PlayerPrefs.Save();
         }
 
-        yield return new WaitForSeconds(1.25f); // Pequeña pausa antes de cambiar de escena
+        yield return new WaitForSeconds(1.25f); //Pequeña pausa antes de cambiar de escena
 
-        // Guardar la posición de llegada en PlayerPrefs
+        //Guardar la posición de llegada en PlayerPrefs
         if (posicionLlegada != null)
         {
             PlayerPrefs.SetFloat("PosX", posicionLlegada.position.x);

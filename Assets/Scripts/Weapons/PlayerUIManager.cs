@@ -14,12 +14,12 @@ public class PlayerUIManager : MonoBehaviour
     public TMP_Text reservedAmmoCountText;
 
     [Header("Weapon UI")]
-    public GameObject pistolIcon;  // Icono de la pistola
-    public GameObject rifleIcon;   // Icono del rifle
+    public GameObject pistolIcon;  //Icono de la pistola
+    public GameObject rifleIcon;   //Icono del rifle
 
     private void Start()
     {
-        // 🔥 Asegurar que al inicio la pistola esté activada
+        //Asegurar que al inicio la pistola esté activada
         UpdateWeaponUI("Pistol");
     }
 
@@ -29,7 +29,7 @@ public class PlayerUIManager : MonoBehaviour
         pistolIcon.SetActive(false);
         rifleIcon.SetActive(false);
 
-        // Activa el icono según el arma actual
+        //Activa el icono según el arma actual
         if (currentWeaponName == "Pistola")
         {
             pistolIcon.SetActive(true);

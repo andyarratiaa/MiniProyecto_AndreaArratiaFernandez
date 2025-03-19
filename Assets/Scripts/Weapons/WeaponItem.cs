@@ -6,7 +6,7 @@ using UnityEngine;
 public class WeaponItem : Item
 {
     [Header("Weapon Info")]
-    public string weaponName; // ← Nombre identificable del arma
+    public string weaponName; //Nombre identificable del arma
 
     [Header("Weapon Animation")]
     public AnimatorOverrideController weaponAnimator;
@@ -16,10 +16,10 @@ public class WeaponItem : Item
 
     [Header("Ammo")]
     public int remainingAmmo;
-    public int maxAmmo = 12; // Capacidad máxima del cargador
+    public int maxAmmo = 12; //Capacidad máxima del cargador
     public AmmoType ammoType;
 
     [Header("Weapon Audio")]
-    public AudioClip shootSound; // 🔊 Sonido de disparo
+    public AudioClip shootSound; //Sonido de disparo
 }
 

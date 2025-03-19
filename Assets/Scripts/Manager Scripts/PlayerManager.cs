@@ -21,8 +21,8 @@ public class PlayerManager : MonoBehaviour
     public bool isAiming;
     public bool canInteract;
 
-    private AudioSource audioSource; // 🔊 AudioSource para sonidos de disparo
-    public AudioClip hurtSound; // 🔊 Sonido de queja cuando recibe daño
+    private AudioSource audioSource; //AudioSource para sonidos de disparo
+    public AudioClip hurtSound; //Sonido de queja cuando recibe daño
     public AudioClip reloadSound;
 
     private void Awake()
@@ -37,7 +37,7 @@ public class PlayerManager : MonoBehaviour
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
 
-        // 🔊 Inicializar el AudioSource
+        //Inicializar el AudioSource
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -76,13 +76,13 @@ public class PlayerManager : MonoBehaviour
             playerEquipmentManager.currentWeapon.remainingAmmo -= 1;
             playerUIManager.currentAmmoCountText.text = playerEquipmentManager.currentWeapon.remainingAmmo.ToString();
 
-            // 🔹 Reproducir la animación de disparo
+            //Reproducir la animación de disparo
             animatorManager.PlayAnimationWithOutRootMotion("Pistol_Shoot", true);
 
-            // 🔊 Reproducir sonido del disparo
+            //Reproducir sonido del disparo
             PlayWeaponSound();
 
-            // 🔹 Disparar el arma con la animación correcta
+            //Disparar el arma con la animación correcta
             playerEquipmentManager.weaponAnimator.ShootWeapon(playerCamera, playerEquipmentManager.currentWeapon);
         }
         else
@@ -99,7 +99,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void PlayHurtSound() // 🔊 Método para reproducir sonido de daño
+    public void PlayHurtSound() //Método para reproducir sonido de daño
     {
         if (audioSource != null && hurtSound != null)
         {

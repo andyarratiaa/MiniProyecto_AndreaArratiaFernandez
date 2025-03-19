@@ -11,7 +11,7 @@ public class AmmoPickup : MonoBehaviour
 
     private void Start()
     {
-        // Si no hay un AudioSource en el objeto, lo añadimos
+        //Si no hay un AudioSource en el objeto, lo añadimos
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -20,8 +20,8 @@ public class AmmoPickup : MonoBehaviour
 
         // Configuración del AudioSource
         audioSource.volume = 1.0f;
-        audioSource.spatialBlend = 0f; // 🔹 Sonido 2D para que siempre se escuche bien
-        audioSource.playOnAwake = false; // 🔹 Evita que el sonido se reproduzca al inicio
+        audioSource.spatialBlend = 0f; //Sonido 2D para que siempre se escuche bien
+        audioSource.playOnAwake = false; //Evita que el sonido se reproduzca al inicio
     }
 
     private void OnTriggerEnter(Collider other)
@@ -44,7 +44,7 @@ public class AmmoPickup : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E)) // Espera a que el jugador presione Enter
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E)) //Espera a que el jugador presione E
         {
             PickupAmmo();
         }
@@ -60,16 +60,16 @@ public class AmmoPickup : MonoBehaviour
 
         Debug.Log("✅ Munición recogida: " + ammoAmount);
 
-        // 🔊 Reproducir sonido de recogida de munición antes de destruir el objeto
+        //Reproducir sonido de recogida de munición antes de destruir el objeto
         if (pickupSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(pickupSound);
-            GetComponent<Collider>().enabled = false; // 🔹 Desactiva colisión para evitar recolecciones múltiples
-            Destroy(gameObject, pickupSound.length); // 🔹 Se destruye tras reproducir el sonido
+            GetComponent<Collider>().enabled = false; //Desactiva colisión para evitar recolecciones múltiples
+            Destroy(gameObject, pickupSound.length); //Se destruye tras reproducir el sonido
         }
         else
         {
-            Destroy(gameObject); // 🔹 Si no hay sonido, se destruye inmediatamente
+            Destroy(gameObject); //Si no hay sonido, se destruye inmediatamente
         }
     }
 }

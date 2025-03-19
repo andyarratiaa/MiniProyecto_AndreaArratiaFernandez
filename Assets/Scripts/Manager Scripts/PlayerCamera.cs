@@ -37,7 +37,7 @@ public class PlayerCamera : MonoBehaviour
     }
     private void Update()
     {
-        if (Time.timeScale == 0) // Bloquear la cámara si el juego está pausado
+        if (Time.timeScale == 0) //Bloquear la cámara si el juego está pausado
             return;
 
         HandleAllCameraMovement();

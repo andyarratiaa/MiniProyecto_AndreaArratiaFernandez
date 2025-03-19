@@ -8,11 +8,11 @@ public class PlayerEquipmentManager : MonoBehaviour
     WeaponLoaderSlot weaponLoaderSlot;
 
     [Header("Current Equipment")]
-    public WeaponItem primaryWeapon; // Pistola
-    public WeaponItem secondaryWeapon; // Rifle
+    public WeaponItem primaryWeapon; //Pistola
+    public WeaponItem secondaryWeapon; //Rifle
     public WeaponItem currentWeapon;
-    public int pistolAmmoInventory = 12; // Máximo de 12 para la pistola
-    public int rifleAmmoInventory = 6;  // Máximo de 6 para el rifle
+    public int pistolAmmoInventory = 12; //Máximo de 12 para la pistola
+    public int rifleAmmoInventory = 6;  //Máximo de 6 para el rifle
     public WeaponAnimatorManager weaponAnimator;
     RightHandIKTarget rightHandIK;
     LeftHandIKTarget leftHandIK;
@@ -25,13 +25,13 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     private void Start()
     {
-        currentWeapon = primaryWeapon; // Inicia con la pistola
+        currentWeapon = primaryWeapon; //Inicia con la pistola
         LoadCurrentWeapon();
     }
 
     private void Update()
     {
-        if (Time.timeScale == 0) return; // ✅ Evita cambiar de arma en pausa
+        if (Time.timeScale == 0) return; //Evita cambiar de arma en pausa
 
         if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
         {

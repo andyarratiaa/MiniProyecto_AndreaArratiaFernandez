@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour
         playerUIManager = FindObjectOfType<PlayerUIManager>();
         playerCamera = FindObjectOfType<PlayerCamera>();
 
-        // Asegurar que el menú de pausa está oculto al inicio
+        //Asegurar que el menú de pausa está oculto al inicio
         PausePanel.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -76,7 +76,7 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Shoot.performed += i => shootInput = true;
             playerControls.PlayerActions.Shoot.canceled += i => shootInput = false;
             playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
-            playerControls.PlayerActions.Pause.performed += i => TogglePause(); // Detecta el input de pausa
+            playerControls.PlayerActions.Pause.performed += i => TogglePause(); //Detecta el input de pausa
         }
 
         playerControls.Enable();
@@ -89,7 +89,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (isPaused) return; // Bloqueamos inputs mientras está pausado
+        if (isPaused) return; //Bloqueamos inputs mientras está pausado
 
         HandleAllInputs();
         HandleGravityAndGrounding();
@@ -111,11 +111,11 @@ public class InputManager : MonoBehaviour
     {
         if (isPaused)
         {
-            ContinueGame(); // ✅ Llama a la función de continuar si está pausado
+            ContinueGame(); //Llama a la función de continuar si está pausado
         }
         else
         {
-            PauseGame(); // ✅ Pausa el juego si no está pausado
+            PauseGame(); //Pausa el juego si no está pausado
         }
     }
 
@@ -129,13 +129,13 @@ public class InputManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // ✅ Deshabilitar la cámara para evitar que siga rotando
+        //Deshabilitar la cámara para evitar que siga rotando
         if (playerCamera != null)
         {
             playerCamera.enabled = false;
         }
 
-        // ✅ Resetear inputs de la cámara para evitar que siga en movimiento
+        //Resetear inputs de la cámara para evitar que siga en movimiento
         horizontalCameraInput = 0f;
         verticalCameraInput = 0f;
         cameraInput = Vector2.zero;
@@ -159,7 +159,7 @@ public class InputManager : MonoBehaviour
             playerCamera.enabled = true;
         }
 
-        // ✅ También reiniciamos los valores de entrada al volver al juego
+        //También reiniciamos los valores de entrada al volver al juego
         cameraInput = Vector2.zero;
         horizontalCameraInput = 0f;
         verticalCameraInput = 0f;
@@ -198,25 +198,27 @@ public class InputManager : MonoBehaviour
 
     private void HandleShootingInput()
     {
-        if (shootInput) // 🔹 Se ejecuta cada vez que el jugador presiona el botón
+        if (!aimingInput) //EVITA DISPARAR SI NO ESTÁ APUNTANDO
+        {
+            Debug.Log("No puedes disparar sin apuntar.");
+            return;
+        }
+
+        if (shootInput) //Se ejecuta cada vez que el jugador presiona el botón
         {
             WeaponItem currentWeapon = player.playerEquipmentManager.currentWeapon;
 
             if (currentWeapon.remainingAmmo > 0)
             {
-                Debug.Log("🔫 Disparando con " + currentWeapon.remainingAmmo + " balas restantes.");
+                Debug.Log("Disparando con " + currentWeapon.remainingAmmo + " balas restantes.");
 
                 player.UseCurrentWeapon();
 
-                // 🔹 Mantener el input activo por un pequeño tiempo para evitar que se pierda
+                //Mantener el input activo por un pequeño tiempo para evitar que se pierda
                 StartCoroutine(ResetShootInput());
 
-                // 🔹 Evitar que el Animator bloquee el disparo
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
-                {
-                    Debug.Log("📌 La animación de disparo ya está en curso.");
-                }
-                else
+                //Evitar que el Animator bloquee el disparo
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
                 {
                     animator.Play("Shoot");
                 }
@@ -229,11 +231,12 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // 🔹 Método para evitar que `shootInput` se desactive instantáneamente
+
+    //Método para evitar que `shootInput` se desactive instantáneamente
     private IEnumerator ResetShootInput()
     {
-        yield return new WaitForSeconds(0.1f); // 🔹 Pequeña espera para procesar la acción
-        shootInput = false; // 🔹 Ahora sí, se cancela el input
+        yield return new WaitForSeconds(0.1f); //Pequeña espera para procesar la acción
+        shootInput = false; //Ahora sí, se cancela el input
     }
 
 
@@ -275,7 +278,7 @@ public class InputManager : MonoBehaviour
                     ammoInventory.ammoRemaining = 0;
                 }
 
-                // Reproduce la animación de recarga pero no bloquea el disparo
+                //Reproduce la animación de recarga pero no bloquea el disparo
                 player.animatorManager.PlayAnimation("Reload", false);
                 player.PlayReloadSound();
 
@@ -285,7 +288,7 @@ public class InputManager : MonoBehaviour
 
                 Debug.Log("Recarga completada. Balas en el arma: " + currentWeapon.remainingAmmo);
 
-                // ❌ NO ACTIVAR `shootInput = true;` después de recargar
+                //NO ACTIVAR `shootInput = true;` después de recargar
             }
         }
     }
