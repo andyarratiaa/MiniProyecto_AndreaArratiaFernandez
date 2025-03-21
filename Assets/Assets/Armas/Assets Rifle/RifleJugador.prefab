@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dbe46d63aa649243a843d5f4a69e417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponMuzzleFlashFX: {fileID: 100006, guid: e4704660d196fac40802911e12ac76f1, type: 3}
+  weaponMuzzleFlashFX: {fileID: 100002, guid: fc7f8379080d0a844ad699b91bfd56f0, type: 3}
   weaponBulletCaseFX: {fileID: 5763617763959128859, guid: 39a609b9adfa49944a1b07463be2a410,
     type: 3}
   weaponMuzzleFlashTransform: {fileID: 1300031214307036719}
