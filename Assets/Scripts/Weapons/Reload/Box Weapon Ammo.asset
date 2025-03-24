@@ -15,5 +15,5 @@ MonoBehaviour:
   itemName: 
   itemModel: {fileID: 0}
   ammoType: 0
-  ammoRemaining: 50
-  boxOfAmmoCapacity: 50
+  ammoRemaining: 30
+  boxOfAmmoCapacity: 30

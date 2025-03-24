@@ -6,6 +6,6 @@ using UnityEngine;
 public class BoxOfAmmoItem : Item
 {
     public AmmoType ammoType;
-    public int ammoRemaining = 50;
-    public int boxOfAmmoCapacity = 50;
+    public int ammoRemaining = 30;
+    public int boxOfAmmoCapacity = 30;
 }

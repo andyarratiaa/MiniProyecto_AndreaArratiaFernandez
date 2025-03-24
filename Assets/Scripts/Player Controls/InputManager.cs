@@ -205,8 +205,10 @@ public class InputManager : MonoBehaviour
             return;
         }
 
-        if (shootInput) //Se ejecuta cada vez que el jugador presiona el botón
+        if (shootInput)
         {
+            shootInput = false; //Desactiva el input inmediatamente
+
             WeaponItem currentWeapon = player.playerEquipmentManager.currentWeapon;
 
             if (currentWeapon.remainingAmmo > 0)
@@ -215,10 +217,6 @@ public class InputManager : MonoBehaviour
 
                 player.UseCurrentWeapon();
 
-                //Mantener el input activo por un pequeño tiempo para evitar que se pierda
-                StartCoroutine(ResetShootInput());
-
-                //Evitar que el Animator bloquee el disparo
                 if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
                 {
                     animator.Play("Shoot");
@@ -230,6 +228,7 @@ public class InputManager : MonoBehaviour
                 HandleReloadInput();
             }
         }
+
     }
 
 
