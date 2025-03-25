@@ -22,8 +22,8 @@ public class DamageObject : MonoBehaviour
 
         // Configuración del AudioSource
         audioSource.volume = 1.0f;
-        audioSource.spatialBlend = 0f; // 🔹 Sonido 2D para que siempre se escuche igual
-        audioSource.playOnAwake = false; // 🔹 Evita que el sonido se reproduzca al inicio
+        audioSource.spatialBlend = 0f; //Sonido 2D para que siempre se escuche igual
+        audioSource.playOnAwake = false; //Evita que el sonido se reproduzca al inicio
     }
 
     private void OnTriggerEnter(Collider other)
@@ -36,7 +36,7 @@ public class DamageObject : MonoBehaviour
             float damageAmount = playerHealth.maxHealth * (damagePercentage / 100f);
             playerHealth.TakeDamage(damageAmount);
 
-            Debug.Log("💥 ¡El jugador ha recibido daño!");
+            Debug.Log("El jugador ha recibido daño");
 
             // 🔊 Reproducir sonido de explosión
             if (explosionSound != null && audioSource != null)
